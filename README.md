@@ -1,2 +1,1 @@
-# teq-echo
-
+# Project register course
