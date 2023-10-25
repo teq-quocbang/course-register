@@ -2,8 +2,8 @@ package account
 
 import (
 	"context"
-	"log"
 
+	"git.teqnological.asia/teq-go/teq-pkg/teqerror"
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/presenter"
@@ -13,10 +13,20 @@ import (
 
 func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*presenter.AccountResponseWrapper, error) {
 	// TODO: check permission
-
 	// validate check
 	if err := req.Validate(); err != nil {
 		return nil, err
+	}
+
+	// check unique constraint
+	if account, err := u.Account.GetByAccountConstraint(ctx, &model.Account{
+		Username: req.Username,
+		Email:    req.Email,
+	}); err == nil && account != nil {
+		return nil, teqerror.TeqError{
+			Raw:       nil,
+			ErrorCode: "",
+		}
 	}
 
 	// create account
@@ -30,7 +40,7 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 		HashPassword: hashPassword,
 		Email:        req.Email,
 	}
-	log.Println(createAccountRequest)
+
 	ID, err := u.Account.CreateAccount(ctx, createAccountRequest)
 	if err != nil {
 		return nil, myerror.ErrAccountCreate(err)
