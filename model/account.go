@@ -7,12 +7,12 @@ import (
 )
 
 type Account struct {
-	StudentID    uint      `json:"student_id"`
-	Username     string    `json:"username"`
-	Email        string    `json:"email"`
-	HashPassword []byte    `json:"hash_password"`
-	IsVerified   bool      `json:"is_verified"`
-	RegisteredAt time.Time `json:"registered_at"`
+	ID           uint      `json:"ID,omitempty"`
+	Username     string    `json:"username,omitempty"`
+	Email        string    `json:"email,omitempty"`
+	HashPassword []byte    `json:"hash_password,omitempty"`
+	IsVerified   bool      `json:"is_verified,omitempty"`
+	CreatedAt    time.Time `json:"created_at,omitempty"`
 }
 
 func (Account) TableName() string {
@@ -20,7 +20,7 @@ func (Account) TableName() string {
 }
 
 type AccountVerify struct {
-	StudentID  uint      `json:"student_id"`
+	AccountID  uint      `json:"account_id"`
 	SecretCode uuid.UUID `json:"secret_code"`
 	IsUsed     bool      `json:"is_used"`
 	CreatedAt  time.Time `json:"created_at"`
@@ -28,4 +28,17 @@ type AccountVerify struct {
 
 func (AccountVerify) TableName() string {
 	return "account_verify"
+}
+
+type Session struct {
+	ID           uuid.UUID `json:"ID"`
+	AccountID    string    `json:"account_id"`
+	RefreshToken string    `json:"refresh_token"`
+	UserAgent    string    `json:"user_agent"`
+	ClientIP     string    `json:"client_ip"`
+	ExpiresAt    time.Time `json:"expires_at"`
+}
+
+func (Session) TableName() string {
+	return "session"
 }

@@ -2,6 +2,7 @@ package example
 
 import (
 	"context"
+	"log"
 	"strings"
 
 	"github.com/teq-quocbang/course-register/model"
@@ -35,6 +36,8 @@ func (u *UseCase) Create(
 		Name:      *req.Name,
 		CreatedBy: 1, // must be validate logged user.
 	}
+
+	log.Println(myExample)
 
 	err := u.ExampleRepo.Create(ctx, myExample)
 	if err != nil {

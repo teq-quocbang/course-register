@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/teq-quocbang/course-register/payload"
+	"github.com/teq-quocbang/course-register/presenter"
 )
 
 type IUseCase interface {
-	CreateAccount(context.Context, *payload.CreateAccountRequest) (*payload.CreateAccountResponse, error)
+	SignUp(context.Context, *payload.SignUpRequest) (*presenter.AccountResponseWrapper, error)
 }

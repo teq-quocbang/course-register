@@ -16,7 +16,10 @@ func NewAccountPG(getDB func(context.Context) *gorm.DB) Repository {
 }
 
 func (p *pgRepository) CreateAccount(ctx context.Context, req *model.Account) (uint, error) {
-	return 0, nil
+	if err := p.getDB(ctx).Create(req).Error; err != nil {
+		return 0, err
+	}
+	return req.ID, nil
 }
 
 func (p *pgRepository) GetAccountByID(ctx context.Context, studentID uint) (*model.Account, error) {

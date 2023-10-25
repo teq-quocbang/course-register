@@ -1,0 +1,1 @@
+ALTER TABLE `account` ADD CONSTRAINT uidx_email UNIQUE (`email`);

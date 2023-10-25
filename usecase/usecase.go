@@ -25,6 +25,7 @@ func New(repo *repository.Repository) *UseCase {
 	)
 
 	return &UseCase{
+		Account: account.New(repo, ses),
 		Example: example.New(repo, ses),
 		GRPC:    grpc.New(repo),
 		SES:     ses,

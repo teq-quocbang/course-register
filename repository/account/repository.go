@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	CreateAccount(context.Context, *model.Account) (studentID uint, err error)
+	CreateAccount(context.Context, *model.Account) (ID uint, err error)
 	GetAccountByID(ctx context.Context, studentID uint) (*model.Account, error)
 	CreateVerifyAccount(context.Context, *model.AccountVerify) error
 	GetVerifyAccountByID(ctx context.Context, studentID uint) (*model.AccountVerify, error)
