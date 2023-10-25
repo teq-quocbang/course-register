@@ -76,3 +76,13 @@ func ErrAccountConflictUniqueConstraint(message string) teqerror.TeqError {
 		IsSentry:  false,
 	}
 }
+
+func ErrAccountGenerateToken(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "10007",
+		Message:   "failed to generate token",
+		IsSentry:  false,
+	}
+}
