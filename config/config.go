@@ -1,8 +1,6 @@
 package config
 
 import (
-	"time"
-
 	"git.teqnological.asia/teq-go/teq-pkg/teqlogger"
 	"git.teqnological.asia/teq-go/teq-pkg/teqsentry"
 	"github.com/joho/godotenv"
@@ -50,10 +48,10 @@ type Config struct {
 		DefaultDir string `envconfig:"S3_DEFAULT_DIR"`
 	}
 
-	SentryDSN            string        `envconfig:"SENTRY_DSN"`
-	TokenSecretKey       string        `envconfig:"TOKEN_SECRET_KEY"`
-	AccessTokenDuration  time.Duration `envconfig:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration time.Duration `envconfig:"REFRESH_TOKEN_DURATION"`
+	SentryDSN            string `envconfig:"SENTRY_DSN"`
+	TokenSecretKey       string `envconfig:"TOKEN_SECRET_KEY"`
+	AccessTokenDuration  int64  `envconfig:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration int64  `envconfig:"REFRESH_TOKEN_DURATION"`
 }
 
 func init() {

@@ -21,7 +21,7 @@ require (
 	go.uber.org/zap v1.26.0 // indirect
 	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
-	gorm.io/driver/mysql v1.1.2
+	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.4
 )
 
@@ -45,7 +45,7 @@ require (
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect

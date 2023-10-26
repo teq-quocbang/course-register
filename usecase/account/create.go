@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"time"
 
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
@@ -76,7 +77,7 @@ func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presen
 		User: token.UserInfo{
 			Username: account.Username,
 		},
-		TokenLifeTime: p.Config.AccessTokenDuration,
+		TokenLifeTime: time.Duration(p.Config.AccessTokenDuration),
 	}
 	// generate access token
 	accessToken, _, err := jwt.GenerateToken()
@@ -85,7 +86,7 @@ func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presen
 	}
 
 	// generate refresh token
-	jwt.TokenLifeTime = p.Config.RefreshTokenDuration
+	jwt.TokenLifeTime = time.Duration(p.Config.RefreshTokenDuration)
 	refreshToken, _, err := jwt.GenerateToken()
 	if err != nil {
 		return nil, myerror.ErrAccountGenerateToken(err)
