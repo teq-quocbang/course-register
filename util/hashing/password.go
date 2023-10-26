@@ -1,12 +1,15 @@
 package hashing
 
 import (
-	"net/http"
+	"errors"
 
-	"git.teqnological.asia/teq-go/teq-pkg/teqerror"
 	"github.com/teq-quocbang/course-register/util/myerror"
 
 	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	ErrWrongPassword error = errors.New("wrong password")
 )
 
 func ToHashPassword(password string) ([]byte, error) {
@@ -19,13 +22,10 @@ func ToHashPassword(password string) ([]byte, error) {
 
 func CompareHashPassword(password string, hashedPassword []byte) error {
 	if err := bcrypt.CompareHashAndPassword(hashedPassword, []byte(password)); err != nil {
-		return teqerror.TeqError{
-			Raw:       nil,
-			ErrorCode: "10010",
-			HTTPCode:  http.StatusForbidden,
-			Message:   "wrong password",
-			IsSentry:  false,
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return ErrWrongPassword
 		}
+		return err
 	}
 	return nil
 }

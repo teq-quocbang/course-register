@@ -86,3 +86,13 @@ func ErrAccountGenerateToken(err error) teqerror.TeqError {
 		IsSentry:  false,
 	}
 }
+
+func ErrAccountComparePassword(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		ErrorCode: "20008",
+		HTTPCode:  http.StatusForbidden,
+		Message:   "Failed to compare password",
+		IsSentry:  false,
+	}
+}

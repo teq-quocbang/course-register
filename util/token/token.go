@@ -15,12 +15,14 @@ type TokenMaker interface {
 
 type JWTClaimCustom struct {
 	SessionID uuid.UUID
-	Username  string
+	User      UserInfo
 	jwt.RegisteredClaims
 }
 
 type UserInfo struct {
+	ID       uint
 	Username string
+	Email    string
 }
 
 type JWT struct {
@@ -36,7 +38,11 @@ func (j JWT) GenerateToken() (string, *JWTClaimCustom, error) {
 
 	claims := &JWTClaimCustom{
 		SessionID: uuid.New(),
-		Username:  j.User.Username,
+		User: UserInfo{
+			ID:       j.User.ID,
+			Username: j.User.Username,
+			Email:    j.User.Email,
+		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{
 				Time: time.Now().Add(j.TokenLifeTime),

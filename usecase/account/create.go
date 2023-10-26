@@ -69,13 +69,15 @@ func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presen
 
 	// compare password
 	if err := hashing.CompareHashPassword(req.Password, account.HashPassword); err != nil {
-		return nil, err
+		return nil, myerror.ErrAccountComparePassword(err)
 	}
 
 	jwt := token.JWT{
 		SecretKey: p.Config.TokenSecretKey,
 		User: token.UserInfo{
+			ID:       account.ID,
 			Username: account.Username,
+			Email:    account.Email,
 		},
 		TokenLifeTime: time.Duration(p.Config.AccessTokenDuration * int64(time.Second)),
 	}
