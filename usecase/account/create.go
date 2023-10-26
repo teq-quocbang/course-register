@@ -18,11 +18,17 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 	}
 
 	// check unique constraint
-	if account, err := u.Account.GetAccountByConstraint(ctx, &model.Account{
+	account, err := u.Account.GetAccountByConstraint(ctx, &model.Account{
 		Username: req.Username,
 		Email:    req.Email,
-	}); err == nil && account != nil {
-		return nil, myerror.ErrAccountConflictUniqueConstraint("Username or Email was registered")
+	})
+	if err != nil {
+		return nil, myerror.ErrAccountGet(err)
+	}
+
+	// check whether constraint is existed
+	if account != nil {
+		return nil, myerror.ErrAccountConflictUniqueConstraint("Username or password was registered")
 	}
 
 	// create account
