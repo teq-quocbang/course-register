@@ -81,7 +81,7 @@ func ErrAccountGenerateToken(err error) teqerror.TeqError {
 	return teqerror.TeqError{
 		Raw:       err,
 		HTTPCode:  http.StatusInternalServerError,
-		ErrorCode: "10007",
+		ErrorCode: "20007",
 		Message:   "failed to generate token",
 		IsSentry:  false,
 	}
