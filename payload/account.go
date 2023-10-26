@@ -2,7 +2,6 @@ package payload
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
 type SignUpRequest struct {
@@ -18,16 +17,10 @@ type LoginRequest struct {
 
 func (l *LoginRequest) Validate() error {
 	validate := validator.New()
-	if err := validate.Struct(l); err != nil {
-		return myerror.ErrAccountInvalidParam(err.Error())
-	}
-	return nil
+	return validate.Struct(l)
 }
 
 func (s *SignUpRequest) Validate() error {
 	validate := validator.New()
-	if err := validate.Struct(s); err != nil {
-		return myerror.ErrAccountInvalidParam(err.Error())
-	}
-	return nil
+	return validate.Struct(s)
 }

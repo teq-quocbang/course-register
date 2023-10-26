@@ -45,3 +45,13 @@ func ErrJSONUnmarshal(err error) teqerror.TeqError {
 		IsSentry:  true,
 	}
 }
+
+func ErrForbidden(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusForbidden,
+		ErrorCode: "004",
+		Message:   "Failed to access",
+		IsSentry:  false,
+	}
+}
