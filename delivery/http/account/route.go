@@ -13,4 +13,5 @@ func Init(group *echo.Group, useCase *usecase.UseCase) {
 	r := &Route{UseCase: useCase}
 
 	group.POST("/sign-up", r.SignUp)
+	group.POST("/login", r.Login)
 }

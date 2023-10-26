@@ -11,9 +11,22 @@ type SignUpRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-func (a *SignUpRequest) Validate() error {
+type LoginRequest struct {
+	ID       uint   `json:"id" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+func (l *LoginRequest) Validate() error {
 	validate := validator.New()
-	if err := validate.Struct(a); err != nil {
+	if err := validate.Struct(l); err != nil {
+		return myerror.ErrAccountInvalidParam(err.Error())
+	}
+	return nil
+}
+
+func (s *SignUpRequest) Validate() error {
+	validate := validator.New()
+	if err := validate.Struct(s); err != nil {
 		return myerror.ErrAccountInvalidParam(err.Error())
 	}
 	return nil

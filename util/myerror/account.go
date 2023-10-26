@@ -76,3 +76,23 @@ func ErrAccountConflictUniqueConstraint(message string) teqerror.TeqError {
 		IsSentry:  false,
 	}
 }
+
+func ErrAccountGenerateToken(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "20007",
+		Message:   "failed to generate token",
+		IsSentry:  false,
+	}
+}
+
+func ErrAccountComparePassword(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		ErrorCode: "20008",
+		HTTPCode:  http.StatusForbidden,
+		Message:   "Failed to compare password",
+		IsSentry:  false,
+	}
+}

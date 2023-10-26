@@ -1,9 +1,15 @@
 package hashing
 
 import (
+	"errors"
+
 	"github.com/teq-quocbang/course-register/util/myerror"
 
 	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	ErrWrongPassword error = errors.New("wrong password")
 )
 
 func ToHashPassword(password string) ([]byte, error) {
@@ -12,4 +18,14 @@ func ToHashPassword(password string) ([]byte, error) {
 		return nil, myerror.ErrAccountCreate(err)
 	}
 	return hashPassword, nil
+}
+
+func CompareHashPassword(password string, hashedPassword []byte) error {
+	if err := bcrypt.CompareHashAndPassword(hashedPassword, []byte(password)); err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return ErrWrongPassword
+		}
+		return err
+	}
+	return nil
 }

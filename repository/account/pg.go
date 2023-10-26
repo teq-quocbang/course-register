@@ -3,8 +3,9 @@ package account
 import (
 	"context"
 
-	"github.com/teq-quocbang/course-register/model"
 	"gorm.io/gorm"
+
+	"github.com/teq-quocbang/course-register/model"
 )
 
 type pgRepository struct {
@@ -23,7 +24,11 @@ func (p *pgRepository) CreateAccount(ctx context.Context, req *model.Account) (u
 }
 
 func (p *pgRepository) GetAccountByID(ctx context.Context, studentID uint) (*model.Account, error) {
-	return nil, nil
+	var account *model.Account
+	if err := p.getDB(ctx).Where(`id = ?`, studentID).Take(&account).Error; err != nil {
+		return nil, err
+	}
+	return account, nil
 }
 
 func (p *pgRepository) CreateVerifyAccount(ctx context.Context, req *model.AccountVerify) error {

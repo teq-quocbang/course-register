@@ -50,8 +50,8 @@ type Config struct {
 
 	SentryDSN            string `envconfig:"SENTRY_DSN"`
 	TokenSecretKey       string `envconfig:"TOKEN_SECRET_KEY"`
-	AccessTokenDuration  string `envconfig:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration string `envconfig:"REFRESH_TOKEN_DURATION"`
+	AccessTokenDuration  int64  `envconfig:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration int64  `envconfig:"REFRESH_TOKEN_DURATION"`
 }
 
 func init() {

@@ -2,12 +2,14 @@ package account
 
 import (
 	"context"
+	"time"
 
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/presenter"
 	"github.com/teq-quocbang/course-register/util/hashing"
 	"github.com/teq-quocbang/course-register/util/myerror"
+	"github.com/teq-quocbang/course-register/util/token"
 )
 
 func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*presenter.AccountResponseWrapper, error) {
@@ -51,4 +53,51 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 	return &presenter.AccountResponseWrapper{Account: &model.Account{
 		ID: ID,
 	}}, nil
+}
+
+func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presenter.AccountLoginResponseWrapper, error) {
+	// validate check
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	// get account
+	account, err := p.Account.GetAccountByID(ctx, req.ID)
+	if err != nil {
+		return nil, myerror.ErrAccountGet(err)
+	}
+
+	// compare password
+	if err := hashing.CompareHashPassword(req.Password, account.HashPassword); err != nil {
+		return nil, myerror.ErrAccountComparePassword(err)
+	}
+
+	jwt := token.JWT{
+		SecretKey: p.Config.TokenSecretKey,
+		User: token.UserInfo{
+			ID:       account.ID,
+			Username: account.Username,
+			Email:    account.Email,
+		},
+		TokenLifeTime: time.Duration(p.Config.AccessTokenDuration * int64(time.Second)),
+	}
+	// generate access token
+	accessToken, _, err := jwt.GenerateToken()
+	if err != nil {
+		return nil, myerror.ErrAccountGenerateToken(err)
+	}
+
+	// generate refresh token
+	jwt.TokenLifeTime = time.Duration(p.Config.RefreshTokenDuration * int64(time.Second))
+	refreshToken, _, err := jwt.GenerateToken()
+	if err != nil {
+		return nil, myerror.ErrAccountGenerateToken(err)
+	}
+
+	return &presenter.AccountLoginResponseWrapper{
+		Data: presenter.LoginResponse{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
+	}, nil
 }
