@@ -10,6 +10,7 @@ import (
 	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/teq-quocbang/course-register/config"
+	"github.com/teq-quocbang/course-register/delivery/http/account"
 	"github.com/teq-quocbang/course-register/delivery/http/example"
 	"github.com/teq-quocbang/course-register/delivery/http/healthcheck"
 	"github.com/teq-quocbang/course-register/usecase"
@@ -55,6 +56,7 @@ func NewHTTPHandler(useCase *usecase.UseCase) *echo.Echo {
 	// APIs
 	api := e.Group("/api")
 	example.Init(api.Group("/examples"), useCase)
+	account.Init(api.Group("/user"), useCase)
 
 	return e
 }

@@ -48,8 +48,10 @@ type Config struct {
 		DefaultDir string `envconfig:"S3_DEFAULT_DIR"`
 	}
 
-	SentryDSN      string `envconfig:"SENTRY_DSN"`
-	TokenSecretKey string `envconfig:"TOKEN_SECRET_KEY"`
+	SentryDSN            string `envconfig:"SENTRY_DSN"`
+	TokenSecretKey       string `envconfig:"TOKEN_SECRET_KEY"`
+	AccessTokenDuration  string `envconfig:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration string `envconfig:"REFRESH_TOKEN_DURATION"`
 }
 
 func init() {

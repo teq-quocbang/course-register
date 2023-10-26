@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/teq-quocbang/course-register/repository"
+	"github.com/teq-quocbang/course-register/usecase/account"
 	"github.com/teq-quocbang/course-register/usecase/example"
 	"github.com/teq-quocbang/course-register/usecase/grpc"
 	myS3 "github.com/teq-quocbang/course-register/util/s3"
@@ -9,6 +10,7 @@ import (
 )
 
 type UseCase struct {
+	Account account.IUseCase
 	Example example.IUseCase
 	GRPC    grpc.IUseCase
 
@@ -23,6 +25,7 @@ func New(repo *repository.Repository) *UseCase {
 	)
 
 	return &UseCase{
+		Account: account.New(repo, ses),
 		Example: example.New(repo, ses),
 		GRPC:    grpc.New(repo),
 		SES:     ses,
