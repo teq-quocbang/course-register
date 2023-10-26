@@ -77,7 +77,7 @@ func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presen
 		User: token.UserInfo{
 			Username: account.Username,
 		},
-		TokenLifeTime: time.Duration(p.Config.AccessTokenDuration),
+		TokenLifeTime: time.Duration(p.Config.AccessTokenDuration * int64(time.Second)),
 	}
 	// generate access token
 	accessToken, _, err := jwt.GenerateToken()
@@ -86,7 +86,7 @@ func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presen
 	}
 
 	// generate refresh token
-	jwt.TokenLifeTime = time.Duration(p.Config.RefreshTokenDuration)
+	jwt.TokenLifeTime = time.Duration(p.Config.RefreshTokenDuration * int64(time.Second))
 	refreshToken, _, err := jwt.GenerateToken()
 	if err != nil {
 		return nil, myerror.ErrAccountGenerateToken(err)
