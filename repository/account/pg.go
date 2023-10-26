@@ -34,7 +34,7 @@ func (p *pgRepository) GetVerifyAccountByID(ctx context.Context, studentID uint)
 	return nil, nil
 }
 
-func (p *pgRepository) GetByAccountConstraint(ctx context.Context, req *model.Account) (*model.Account, error) {
+func (p *pgRepository) GetAccountByConstraint(ctx context.Context, req *model.Account) (*model.Account, error) {
 	var account *model.Account
 	if err := p.getDB(ctx).Where(`username = ? or email = ?`, req.Username, req.Email).
 		Take(&account).Error; err != nil {
