@@ -3,7 +3,6 @@ package account
 import (
 	"context"
 
-	"git.teqnological.asia/teq-go/teq-pkg/teqerror"
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/presenter"
@@ -23,10 +22,7 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 		Username: req.Username,
 		Email:    req.Email,
 	}); err == nil && account != nil {
-		return nil, teqerror.TeqError{
-			Raw:       nil,
-			ErrorCode: "",
-		}
+		return nil, myerror.ErrAccountConflictUniqueConstraint("Username or Email was registered")
 	}
 
 	// create account

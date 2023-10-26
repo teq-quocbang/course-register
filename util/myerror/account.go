@@ -66,3 +66,13 @@ func ErrAccountInvalidParam(param string) teqerror.TeqError {
 		IsSentry:  false,
 	}
 }
+
+func ErrAccountConflictUniqueConstraint(message string) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       nil,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "10006",
+		Message:   message,
+		IsSentry:  false,
+	}
+}
