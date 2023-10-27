@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/teq-quocbang/course-register/model"
@@ -10,13 +11,14 @@ import (
 	"github.com/teq-quocbang/course-register/util/hashing"
 	"github.com/teq-quocbang/course-register/util/myerror"
 	"github.com/teq-quocbang/course-register/util/token"
+	"gorm.io/gorm"
 )
 
 func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*presenter.AccountResponseWrapper, error) {
 	// TODO: check permission
 	// validate check
 	if err := req.Validate(); err != nil {
-		return nil, err
+		return nil, myerror.ErrAccountInvalidParam(err.Error())
 	}
 
 	// check unique constraint
@@ -24,7 +26,7 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 		Username: req.Username,
 		Email:    req.Email,
 	})
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, myerror.ErrAccountGet(err)
 	}
 
@@ -58,7 +60,7 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 func (p *UseCase) Login(ctx context.Context, req *payload.LoginRequest) (*presenter.AccountLoginResponseWrapper, error) {
 	// validate check
 	if err := req.Validate(); err != nil {
-		return nil, err
+		return nil, myerror.ErrAccountInvalidParam(err.Error())
 	}
 
 	// get account

@@ -5,14 +5,16 @@ import (
 	"github.com/teq-quocbang/course-register/usecase/account"
 	"github.com/teq-quocbang/course-register/usecase/example"
 	"github.com/teq-quocbang/course-register/usecase/grpc"
+	"github.com/teq-quocbang/course-register/usecase/semester"
 	myS3 "github.com/teq-quocbang/course-register/util/s3"
 	mySES "github.com/teq-quocbang/course-register/util/ses"
 )
 
 type UseCase struct {
-	Account account.IUseCase
-	Example example.IUseCase
-	GRPC    grpc.IUseCase
+	Account  account.IUseCase
+	Semester semester.IUseCase
+	Example  example.IUseCase
+	GRPC     grpc.IUseCase
 
 	SES mySES.ISES
 	S3  myS3.IS3
@@ -25,10 +27,11 @@ func New(repo *repository.Repository) *UseCase {
 	)
 
 	return &UseCase{
-		Account: account.New(repo, ses),
-		Example: example.New(repo, ses),
-		GRPC:    grpc.New(repo),
-		SES:     ses,
-		S3:      s3,
+		Account:  account.New(repo, ses),
+		Semester: semester.New(repo, ses),
+		Example:  example.New(repo, ses),
+		GRPC:     grpc.New(repo),
+		SES:      ses,
+		S3:       s3,
 	}
 }
