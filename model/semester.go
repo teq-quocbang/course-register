@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"reflect"
+	"time"
+)
 
 type Semester struct {
 	ID                string    `json:"id"`
@@ -17,4 +20,20 @@ type Semester struct {
 
 func (Semester) TableName() string {
 	return "semester"
+}
+
+func (s Semester) BuildUpdateFields() map[string]interface{} {
+	values := reflect.ValueOf(s)
+	result := make(map[string]interface{}, values.NumField())
+
+	for i := 0; i < values.NumField(); i++ {
+		filed := values.Field(i)
+		fieldName := values.Type().Field(i).Name
+
+		if !filed.IsZero() {
+			result[fieldName] = filed.Interface()
+		}
+	}
+
+	return result
 }

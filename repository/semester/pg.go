@@ -30,3 +30,12 @@ func (p *pgRepository) GetSemester(ctx context.Context, semesterID string) (mode
 	err := p.getDB(ctx).Where(`id = ?`, semesterID).Take(&semester).Error
 	return semester, err
 }
+
+func (p *pgRepository) Update(ctx context.Context, req *model.Semester) error {
+	conditions := req.BuildUpdateFields()
+	return p.getDB(ctx).Model(&model.Semester{}).Where(`id = ?`, req.ID).Updates(conditions).Error
+}
+
+func (p *pgRepository) Delete(ctx context.Context, id string) error {
+	return p.getDB(ctx).Where(`id = ?`, id).Delete(&model.Semester{}).Error
+}

@@ -20,6 +20,86 @@ func currying[t1 any, R1 time.Time, R2 error](f func(t1) (R1, R2)) func(t1) (R1,
 	}
 }
 
+// read wiki for details https://en.wikipedia.org/wiki/Currying
+// currying with one param and one return
+func curryingOne[t1, R any](f func(t1) R) func(t1) R {
+	return func(t1 t1) R {
+		return f(t1)
+	}
+}
+
+func isLessThanCurrentTime(t time.Time) bool {
+	return t.Before(time.Now())
+}
+
+func timeValidate(start time.Time, end time.Time, registerStartAt time.Time, registerExpiresAt time.Time) error {
+	// start currying
+	lessThanCurrentTime := curryingOne(isLessThanCurrentTime)
+
+	// validate whether is less than current time
+	if lessThan := lessThanCurrentTime(start); lessThan {
+		return myerror.ErrSemesterInvalidParam("start time less than current time")
+	}
+	// validate whether is less than current time
+	if lessThan := lessThanCurrentTime(end); lessThan {
+		return myerror.ErrSemesterInvalidParam("end time less than current time")
+	}
+	// validate whether is less than current time
+	if lessThan := lessThanCurrentTime(registerStartAt); lessThan {
+		return myerror.ErrSemesterInvalidParam("register start at less than current time")
+	}
+	// validate whether is less than current time
+	if lessThan := lessThanCurrentTime(registerExpiresAt); lessThan {
+		return myerror.ErrSemesterInvalidParam("register expires at less than current time")
+	}
+
+	// at least 3 month
+	if ok := times.IsLessThan(start, end, times.ThreeMonth); ok {
+		return myerror.ErrSemesterInvalidParam("a semester at least 3 month")
+	}
+
+	// maximum 6 month
+	if ok := times.IsMoreThan(start, end, times.SixMonth); ok {
+		return myerror.ErrSemesterInvalidParam("a semester maximum is six month")
+	}
+	return nil
+}
+
+func parseStringToTime(
+	startTime string,
+	endTime string,
+	registerStartAt string,
+	registerExpiresAt string) (*time.Time, *time.Time, *time.Time, *time.Time, error) {
+	// start currying
+	parseTime := currying(times.StringToTime)
+
+	// curried start time
+	start, err := parseTime(startTime)
+	if err != nil {
+		return nil, nil, nil, nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("start time, error: %v", err))
+	}
+
+	// curried end time
+	end, err := parseTime(endTime)
+	if err != nil {
+		return nil, nil, nil, nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("end time, error: %v", err))
+	}
+
+	// curried register start at
+	rsa, err := parseTime(registerStartAt)
+	if err != nil {
+		return nil, nil, nil, nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("register start at, error: %v", err))
+	}
+
+	// curried register expiries at
+	rexpa, err := parseTime(registerExpiresAt)
+	if err != nil {
+		return nil, nil, nil, nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("register expires at, error: %v", err))
+	}
+
+	return &start, &end, &rsa, &rexpa, nil
+}
+
 func (u *UseCase) CreateSemester(ctx context.Context, req *payload.CreateSemesterRequest) (*presenter.SemesterResponseWrapper, error) {
 	if err := req.Validate(); err != nil {
 		return nil, myerror.ErrSemesterInvalidParam(err.Error())
@@ -28,56 +108,23 @@ func (u *UseCase) CreateSemester(ctx context.Context, req *payload.CreateSemeste
 	// get user principle from context
 	userPrinciple := contexts.GetUserPrincipleByContext(ctx)
 
-	// start currying
-	parseTime := currying(times.StringToTime)
-
-	// curried start time
-	startTime, err := parseTime(req.StartTime)
+	startTime, endTime, registerStartAt, registerExpiresAt, err := parseStringToTime(req.StartTime, req.EndTime, req.RegisterStartAt, req.RegisterExpiresAt)
 	if err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("start time, error: %v", err))
-	}
-	// validate whether is less than current time
-	if lessThan := isLessThanCurrentTime(startTime); lessThan {
-		return nil, myerror.ErrSemesterInvalidParam("start time less than current time")
+		return nil, err
 	}
 
-	// curried end time
-	endTime, err := parseTime(req.EndTime)
-	if err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("end time, error: %v", err))
-	}
-	// validate whether is less than current time
-	if lessThan := isLessThanCurrentTime(endTime); lessThan {
-		return nil, myerror.ErrSemesterInvalidParam("end time less than current time")
-	}
-
-	// curried register start at
-	registerStartAt, err := parseTime(req.RegisterStartAt)
-	if err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("register start at, error: %v", err))
-	}
-	// validate whether is less than current time
-	if lessThan := isLessThanCurrentTime(endTime); lessThan {
-		return nil, myerror.ErrSemesterInvalidParam("register start at less than current time")
-	}
-
-	// curried register expiries at
-	registerExpiresAt, err := parseTime(req.RegisterExpiresAt)
-	if err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(fmt.Sprintf("register expires at, error: %v", err))
-	}
-	// validate whether is less than current time
-	if lessThan := isLessThanCurrentTime(endTime); lessThan {
-		return nil, myerror.ErrSemesterInvalidParam("register expires at less than current time")
+	// validate time
+	if err := timeValidate(*startTime, *endTime, *registerStartAt, *registerExpiresAt); err != nil {
+		return nil, err
 	}
 
 	semester := &model.Semester{
 		ID:                req.ID,
 		MinCredits:        req.MinCredits,
-		StartTime:         startTime,
-		EndTime:           endTime,
-		RegisterStartAt:   registerStartAt,
-		RegisterExpiresAt: registerExpiresAt,
+		StartTime:         *startTime,
+		EndTime:           *endTime,
+		RegisterStartAt:   *registerStartAt,
+		RegisterExpiresAt: *registerExpiresAt,
 		CreatedBy:         &userPrinciple.User.ID,
 	}
 	if err := u.Semester.CreateSemester(ctx, semester); err != nil {
@@ -87,8 +134,4 @@ func (u *UseCase) CreateSemester(ctx context.Context, req *payload.CreateSemeste
 	return &presenter.SemesterResponseWrapper{
 		Semester: *semester,
 	}, nil
-}
-
-func isLessThanCurrentTime(t time.Time) bool {
-	return t.Before(time.Now())
 }

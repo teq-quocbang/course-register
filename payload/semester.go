@@ -26,3 +26,17 @@ func (s *GetListSemesterRequest) Validate() error {
 	validate := validator.New()
 	return validate.Struct(s)
 }
+
+type UpdateSemesterRequest struct {
+	ID                string `json:"id" validate:"required"`
+	MinCredits        int    `json:"min_credits" validate:"min=0"`
+	StartTime         string `json:"start_time"`
+	EndTime           string `json:"end_time"`
+	RegisterStartAt   string `json:"register_start_at"`
+	RegisterExpiresAt string `json:"register_expires_at"`
+}
+
+func (s *UpdateSemesterRequest) Validate() error {
+	validate := validator.New()
+	return validate.Struct(s)
+}
