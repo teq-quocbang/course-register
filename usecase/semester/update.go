@@ -35,7 +35,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateSemesterRequest
 
 	// update
 	userPrinciple := contexts.GetUserPrincipleByContext(ctx)
-	u.Semester.Update(ctx, &model.Semester{
+	semesterModel := &model.Semester{
 		ID:                req.ID,
 		MinCredits:        req.MinCredits,
 		StartTime:         *start,
@@ -43,7 +43,10 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateSemesterRequest
 		RegisterStartAt:   *registerStartAt,
 		RegisterExpiresAt: *registerExpiresAt,
 		UpdatedBy:         &userPrinciple.User.ID,
-	})
+	}
+	u.Semester.Update(ctx, semesterModel)
 
-	return nil, nil
+	return &presenter.SemesterResponseWrapper{
+		Semester: *semesterModel,
+	}, nil
 }

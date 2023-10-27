@@ -3,6 +3,8 @@ package usecase
 import (
 	"github.com/teq-quocbang/course-register/repository"
 	"github.com/teq-quocbang/course-register/usecase/account"
+	"github.com/teq-quocbang/course-register/usecase/class"
+	"github.com/teq-quocbang/course-register/usecase/course"
 	"github.com/teq-quocbang/course-register/usecase/example"
 	"github.com/teq-quocbang/course-register/usecase/grpc"
 	"github.com/teq-quocbang/course-register/usecase/semester"
@@ -13,6 +15,8 @@ import (
 type UseCase struct {
 	Account  account.IUseCase
 	Semester semester.IUseCase
+	Class    class.IUseCase
+	Course   course.IUseCase
 	Example  example.IUseCase
 	GRPC     grpc.IUseCase
 
@@ -28,6 +32,8 @@ func New(repo *repository.Repository) *UseCase {
 
 	return &UseCase{
 		Account:  account.New(repo, ses),
+		Class:    class.New(repo, ses),
+		Course:   course.New(repo, ses),
 		Semester: semester.New(repo, ses),
 		Example:  example.New(repo, ses),
 		GRPC:     grpc.New(repo),

@@ -12,6 +12,8 @@ import (
 	"github.com/teq-quocbang/course-register/config"
 	"github.com/teq-quocbang/course-register/delivery/http/account"
 	"github.com/teq-quocbang/course-register/delivery/http/auth"
+	"github.com/teq-quocbang/course-register/delivery/http/class"
+	"github.com/teq-quocbang/course-register/delivery/http/course"
 	"github.com/teq-quocbang/course-register/delivery/http/example"
 	"github.com/teq-quocbang/course-register/delivery/http/healthcheck"
 	"github.com/teq-quocbang/course-register/delivery/http/semester"
@@ -60,6 +62,8 @@ func NewHTTPHandler(useCase *usecase.UseCase) *echo.Echo {
 	example.Init(api.Group("/examples"), useCase)
 	account.Init(api.Group("/user"), useCase)
 	semester.Init(api.Group("/semester", auth.Auth), useCase)
+	class.Init(api.Group("/class", auth.Auth), useCase)
+	course.Init(api.Group("/course", auth.Auth), useCase)
 
 	return e
 }
