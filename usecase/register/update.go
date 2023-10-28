@@ -1,8 +1,7 @@
-package semester
+package register
 
 import (
 	"context"
-	"time"
 
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
@@ -11,42 +10,46 @@ import (
 	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
-func (u *UseCase) Update(ctx context.Context, req *payload.UpdateSemesterRequest) (*presenter.SemesterResponseWrapper, error) {
-	// validate check
+func (u *UseCase) UnRegister(ctx context.Context, req *payload.UnRegisterRequest) (*presenter.RegisterResponseWrapper, error) {
 	if err := req.Validate(); err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(err.Error())
+		return nil, myerror.ErrRegisterInvalidParam(err.Error())
 	}
 
-	// get semester
-	semester, err := u.Semester.GetSemester(ctx, req.ID)
-	if err != nil {
-		return nil, myerror.ErrSemesterGet(err)
-	}
-
-	// check whether the semester is ended
-	if semester.EndTime.Before(time.Now()) {
-		return nil, myerror.ErrSemesterInvalidParam("the semester was ended")
-	}
-
-	start, end, registerStartAt, registerExpiresAt, err := parseStringToTime(req.StartTime, req.EndTime, req.RegisterStartAt, req.RegisterExpiresAt)
-	if err != nil {
-		return nil, err
-	}
-
-	// update
 	userPrinciple := contexts.GetUserPrincipleByContext(ctx)
-	semesterModel := &model.Semester{
-		ID:                req.ID,
-		MinCredits:        req.MinCredits,
-		StartTime:         *start,
-		EndTime:           *end,
-		RegisterStartAt:   *registerStartAt,
-		RegisterExpiresAt: *registerExpiresAt,
-		UpdatedBy:         &userPrinciple.User.ID,
-	}
-	u.Semester.Update(ctx, semesterModel)
 
-	return &presenter.SemesterResponseWrapper{
-		Semester: *semesterModel,
+	register, err := u.Register.Get(ctx, &model.Register{
+		AccountID:  userPrinciple.User.ID,
+		SemesterID: req.SemesterID,
+		ClassID:    req.ClassID,
+		CourseID:   req.CourseID,
+	})
+	if err != nil {
+		return nil, myerror.ErrRegisterGet(err)
+	}
+
+	if register.IsCanceled {
+		return &presenter.RegisterResponseWrapper{
+			Register: *register,
+		}, nil
+	}
+
+	register = &model.Register{
+		AccountID:  userPrinciple.User.ID,
+		SemesterID: req.SemesterID,
+		ClassID:    req.ClassID,
+		CourseID:   req.CourseID,
+		IsCanceled: !register.IsCanceled,
+	}
+
+	if err := u.Register.BatchUpdateSwapIsCanCeledStatus(ctx, register); err != nil {
+		return nil, myerror.ErrRegisterUpdate(err)
+	}
+
+	if err != nil {
+		return nil, myerror.ErrRegisterGet(err)
+	}
+
+	return &presenter.RegisterResponseWrapper{
+		Register: *register,
 	}, nil
 }

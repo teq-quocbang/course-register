@@ -9,6 +9,7 @@ import (
 	"github.com/teq-quocbang/course-register/repository/class"
 	"github.com/teq-quocbang/course-register/repository/course"
 	"github.com/teq-quocbang/course-register/repository/example"
+	"github.com/teq-quocbang/course-register/repository/register"
 	"github.com/teq-quocbang/course-register/repository/semester"
 )
 
@@ -17,6 +18,7 @@ type Repository struct {
 	Semester semester.Repository
 	Class    class.Repository
 	Course   course.Repository
+	Register register.Repository
 	Example  example.Repository
 }
 
@@ -26,6 +28,7 @@ func New(getClient func(ctx context.Context) *gorm.DB) *Repository {
 		Semester: semester.NewSemesterPG(getClient),
 		Course:   course.NewCoursePG(getClient),
 		Class:    class.NewClassPG(getClient),
+		Register: register.NewClassPG(getClient),
 		Example:  example.NewPG(getClient),
 	}
 }

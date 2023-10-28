@@ -22,11 +22,22 @@ func (s *ListSemesterInformationRequest) Validate() error {
 	return validate.Struct(s)
 }
 
-type ListRegisterHistories struct {
+type ListRegisteredHistories struct {
 	SemesterID string `json:"semester_id" validate:"required"`
 }
 
-func (r *ListRegisterHistories) Validate() error {
+func (r *ListRegisteredHistories) Validate() error {
 	validate := validator.New()
 	return validate.Struct(r)
+}
+
+type UnRegisterRequest struct {
+	SemesterID string `json:"semester_id" validate:"required"`
+	ClassID    string `json:"class_id" validate:"required"`
+	CourseID   string `json:"course_id" validate:"required"`
+}
+
+func (u *UnRegisterRequest) Validate() error {
+	validate := validator.New()
+	return validate.Struct(u)
 }

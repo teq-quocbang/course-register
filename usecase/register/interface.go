@@ -1,4 +1,4 @@
-package semester
+package register
 
 import (
 	"context"
@@ -8,9 +8,8 @@ import (
 )
 
 type IUseCase interface {
-	CreateSemester(context.Context, *payload.CreateSemesterRequest) (*presenter.SemesterResponseWrapper, error)
-	GetList(context.Context, *payload.GetListSemesterRequest) (*presenter.ListSemesterResponseWrapper, error)
-	GetByID(context.Context, string) (*presenter.SemesterResponseWrapper, error)
-	Update(context.Context, *payload.UpdateSemesterRequest) (*presenter.SemesterResponseWrapper, error)
-	Delete(context.Context, string) error
+	Create(context.Context, *payload.CreateRegisterRequest) (*presenter.RegisterResponseWrapper, error)
+	GetListBySemester(context.Context, *payload.ListSemesterInformationRequest) (*presenter.ListRegisterResponseWrapper, error)
+	UnRegister(context.Context, *payload.UnRegisterRequest) (*presenter.RegisterResponseWrapper, error)
+	GetListRegisteredHistories(context.Context, *payload.ListRegisteredHistories) (*presenter.ListRegisterResponseWrapper, error)
 }
