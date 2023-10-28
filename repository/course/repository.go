@@ -7,9 +7,9 @@ import (
 )
 
 type Repository interface {
-	CreateCourse(context.Context, *model.Course) error
-	ListCourseBySemester(ctx context.Context, semesterID string) ([]model.Course, error)
-	GetCourse(ctx context.Context, courseID string) (model.Course, error)
+	Create(context.Context, *model.Course) error
+	GetListBySemester(ctx context.Context, semesterID string) ([]model.Course, error)
+	GetByID(ctx context.Context, courseID string) (model.Course, error)
 	Update(context.Context, *model.Course) error
 	Delete(context.Context, string) error
 }

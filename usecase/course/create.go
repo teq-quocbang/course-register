@@ -11,7 +11,7 @@ import (
 	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
-func validateTime(semester model.Semester) error {
+func validateCreate(semester model.Semester) error {
 	if semester.EndTime.Before(time.Now()) {
 		return myerror.ErrCourseInvalidParam("semester ended")
 	}
@@ -24,12 +24,12 @@ func (u *UseCase) CreateCourse(ctx context.Context, req *payload.CreateCourseReq
 	}
 
 	// check whether out of the semester
-	semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+	semester, err := u.Semester.GetByID(ctx, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}
 
-	if err := validateTime(semester); err != nil {
+	if err := validateCreate(semester); err != nil {
 		return nil, err
 	}
 
@@ -42,7 +42,7 @@ func (u *UseCase) CreateCourse(ctx context.Context, req *payload.CreateCourseReq
 		CreatedBy:  &userPrinciple.User.ID,
 	}
 
-	if err := u.Course.CreateCourse(ctx, course); err != nil {
+	if err := u.Course.Create(ctx, course); err != nil {
 		return nil, myerror.ErrClassCreate(err)
 	}
 

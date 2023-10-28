@@ -17,7 +17,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateCourseRequest) 
 		return nil, myerror.ErrCourseInvalidParam(err.Error())
 	}
 
-	semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+	semester, err := u.Semester.GetByID(ctx, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}

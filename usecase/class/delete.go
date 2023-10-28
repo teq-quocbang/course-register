@@ -11,7 +11,12 @@ func (u *UseCase) Delete(ctx context.Context, id string) error {
 		return myerror.ErrClassInvalidParam("id")
 	}
 
-	err := u.Class.Delete(ctx, id)
+	_, err := u.Class.GetByID(ctx, id)
+	if err != nil {
+		return myerror.ErrClassGet(err)
+	}
+
+	err = u.Class.Delete(ctx, id)
 	if err != nil {
 		return myerror.ErrSemesterDelete(err)
 	}

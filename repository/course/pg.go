@@ -15,17 +15,17 @@ func NewCoursePG(getDB func(context.Context) *gorm.DB) Repository {
 	return &pgRepository{getDB: getDB}
 }
 
-func (p *pgRepository) CreateCourse(ctx context.Context, s *model.Course) error {
+func (p *pgRepository) Create(ctx context.Context, s *model.Course) error {
 	return p.getDB(ctx).Create(&s).Error
 }
 
-func (p *pgRepository) ListCourseBySemester(ctx context.Context, courseID string) ([]model.Course, error) {
+func (p *pgRepository) GetListBySemester(ctx context.Context, courseID string) ([]model.Course, error) {
 	var course []model.Course
 	err := p.getDB(ctx).Where(`semester_id = ?`, courseID).Find(&course).Error
 	return course, err
 }
 
-func (p *pgRepository) GetCourse(ctx context.Context, courseID string) (model.Course, error) {
+func (p *pgRepository) GetByID(ctx context.Context, courseID string) (model.Course, error) {
 	var course model.Course
 	err := p.getDB(ctx).Where(`id = ?`, courseID).Take(&course).Error
 	return course, err

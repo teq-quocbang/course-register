@@ -18,7 +18,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateSemesterRequest
 	}
 
 	// get semester
-	semester, err := u.Semester.GetSemester(ctx, req.ID)
+	semester, err := u.Semester.GetByID(ctx, req.ID)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}

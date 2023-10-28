@@ -11,7 +11,13 @@ func (u *UseCase) Delete(ctx context.Context, id string) error {
 		return myerror.ErrSemesterInvalidParam("id")
 	}
 
-	err := u.Semester.Delete(ctx, id)
+	// check semester
+	_, err := u.Semester.GetByID(ctx, id)
+	if err != nil {
+		return myerror.ErrSemesterGet(err)
+	}
+
+	err = u.Semester.Delete(ctx, id)
 	if err != nil {
 		return myerror.ErrSemesterDelete(err)
 	}

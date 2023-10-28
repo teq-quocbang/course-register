@@ -49,7 +49,7 @@ func parseTime(classStart string, classEnd string) (*time.Time, *time.Time, erro
 	return &start, &end, nil
 }
 
-func validate(classStart string, classEnd string, semesterStart time.Time, semesterEnd time.Time) (*time.Time, *time.Time, error) {
+func validateCreate(classStart string, classEnd string, semesterStart time.Time, semesterEnd time.Time) (*time.Time, *time.Time, error) {
 	start, end, err := parseTime(classStart, classEnd)
 	if err != nil {
 		return nil, nil, err
@@ -82,19 +82,19 @@ func (u *UseCase) CreateClass(ctx context.Context, req *payload.CreateClassReque
 	}
 
 	// check whether out of the semester
-	semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+	semester, err := u.Semester.GetByID(ctx, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}
 
 	// check time
-	start, end, err := validate(req.StartTime, req.EndTime, semester.StartTime, semester.EndTime)
+	start, end, err := validateCreate(req.StartTime, req.EndTime, semester.StartTime, semester.EndTime)
 	if err != nil {
 		return nil, err
 	}
 
 	// check course
-	_, err = u.Course.GetCourse(ctx, req.CourseID)
+	_, err = u.Course.GetByID(ctx, req.CourseID)
 	if err != nil {
 		return nil, myerror.ErrCourseGet(err)
 	}
@@ -112,7 +112,7 @@ func (u *UseCase) CreateClass(ctx context.Context, req *payload.CreateClassReque
 		MaxSlot:    uint(req.MaxSlot),
 		CreatedBy:  &userPrinciple.User.ID,
 	}
-	if err := u.Class.CreateClass(ctx, class); err != nil {
+	if err := u.Class.Create(ctx, class); err != nil {
 		return nil, myerror.ErrClassCreate(err)
 	}
 

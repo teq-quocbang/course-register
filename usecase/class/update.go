@@ -11,7 +11,7 @@ import (
 	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
-func validateClass(startTime time.Time, endTime time.Time, class *model.Class) error {
+func validateUpdate(startTime time.Time, endTime time.Time, class *model.Class) error {
 	// class is starting
 	if class.StartTime.After(time.Now()) && class.EndTime.Before(time.Now()) {
 		return myerror.ErrClassInvalidParam("class starting")
@@ -32,7 +32,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateClassRequest) (
 	}
 
 	// get class
-	class, err := u.Class.GetClass(ctx, req.ID)
+	class, err := u.Class.GetByID(ctx, req.ID)
 	if err != nil {
 		return nil, myerror.ErrClassGet(err)
 	}
@@ -42,7 +42,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateClassRequest) (
 		return nil, err
 	}
 
-	if err := validateClass(*start, *end, &class); err != nil {
+	if err := validateUpdate(*start, *end, &class); err != nil {
 		return nil, err
 	}
 
@@ -70,7 +70,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateClassRequest) (
 }
 
 func (u *UseCase) InCreMember(ctx context.Context, id string) error {
-	class, err := u.Class.GetClass(ctx, id)
+	class, err := u.Class.GetByID(ctx, id)
 	if err != nil {
 		return myerror.ErrClassGet(err)
 	}
@@ -91,7 +91,7 @@ func (u *UseCase) InCreMember(ctx context.Context, id string) error {
 
 func (u *UseCase) DeCreMember(ctx context.Context, id string) error {
 	// check can cancel?
-	_, err := u.Class.GetClass(ctx, id)
+	_, err := u.Class.GetByID(ctx, id)
 	if err != nil {
 		return myerror.ErrClassGet(err)
 	}

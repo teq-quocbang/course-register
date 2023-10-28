@@ -8,7 +8,7 @@ import (
 )
 
 func (u *UseCase) GetByID(ctx context.Context, id string) (*presenter.CourseResponseWrapper, error) {
-	course, err := u.Course.GetCourse(ctx, id)
+	course, err := u.Course.GetByID(ctx, id)
 	if err != nil {
 		return nil, myerror.ErrCourseGet(err)
 	}

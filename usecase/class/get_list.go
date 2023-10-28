@@ -13,7 +13,7 @@ func (u *UseCase) GetList(ctx context.Context, req *payload.ListClassBySemesterR
 		return nil, myerror.ErrClassInvalidParam(err.Error())
 	}
 
-	classes, err := u.Class.ListClassBySemester(ctx, req.SemesterID)
+	classes, err := u.Class.GetListBySemester(ctx, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrClassGet(err)
 	}
