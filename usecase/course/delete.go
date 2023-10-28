@@ -1,4 +1,4 @@
-package semester
+package course
 
 import (
 	"context"
@@ -8,16 +8,15 @@ import (
 
 func (u *UseCase) Delete(ctx context.Context, id string) error {
 	if id == "" {
-		return myerror.ErrSemesterInvalidParam("id")
+		return myerror.ErrClassInvalidParam("id")
 	}
 
-	// check semester
-	_, err := u.Semester.GetByID(ctx, id)
+	_, err := u.Course.GetByID(ctx, id)
 	if err != nil {
-		return myerror.ErrSemesterGet(err)
+		return myerror.ErrCourseGet(err)
 	}
 
-	err = u.Semester.Delete(ctx, id)
+	err = u.Course.Delete(ctx, id)
 	if err != nil {
 		return myerror.ErrSemesterDelete(err)
 	}

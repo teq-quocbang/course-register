@@ -8,7 +8,7 @@ import (
 )
 
 func (u *UseCase) GetByID(ctx context.Context, id string) (*presenter.SemesterResponseWrapper, error) {
-	semester, err := u.Semester.GetSemester(ctx, id)
+	semester, err := u.Semester.GetByID(ctx, id)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}

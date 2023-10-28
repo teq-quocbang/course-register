@@ -32,7 +32,7 @@ func isLessThanCurrentTime(t time.Time) bool {
 	return t.Before(time.Now())
 }
 
-func timeValidate(start time.Time, end time.Time, registerStartAt time.Time, registerExpiresAt time.Time) error {
+func validateCreate(start time.Time, end time.Time, registerStartAt time.Time, registerExpiresAt time.Time) error {
 	// start currying
 	lessThanCurrentTime := curryingOne(isLessThanCurrentTime)
 
@@ -114,7 +114,7 @@ func (u *UseCase) CreateSemester(ctx context.Context, req *payload.CreateSemeste
 	}
 
 	// validate time
-	if err := timeValidate(*startTime, *endTime, *registerStartAt, *registerExpiresAt); err != nil {
+	if err := validateCreate(*startTime, *endTime, *registerStartAt, *registerExpiresAt); err != nil {
 		return nil, err
 	}
 
@@ -127,7 +127,7 @@ func (u *UseCase) CreateSemester(ctx context.Context, req *payload.CreateSemeste
 		RegisterExpiresAt: *registerExpiresAt,
 		CreatedBy:         &userPrinciple.User.ID,
 	}
-	if err := u.Semester.CreateSemester(ctx, semester); err != nil {
+	if err := u.Semester.Create(ctx, semester); err != nil {
 		return nil, myerror.ErrSemesterCreate(err)
 	}
 
