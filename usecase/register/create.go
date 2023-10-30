@@ -31,13 +31,44 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 		return nil, myerror.ErrRegisterGet(err)
 	}
 
-	// do swap isCanceled if register already exited and isCanceled == true
-	if register.IsCanceled {
-		register.IsCanceled = !register.IsCanceled // swap status
-		u.Register.BatchUpdateSwapIsCanCeledStatus(ctx, register)
-		return &presenter.RegisterResponseWrapper{
-			Register: *register,
-		}, nil
+	// if existed
+	if register != nil {
+		// do swap isCanceled if register already exited and isCanceled == true
+		if register.IsCanceled {
+			err := u.Register.BatchUpdateSwapIsCanCeledStatus(ctx, register)
+			if err != nil {
+				return nil, myerror.ErrRegisterUpdate(err)
+			}
+			register.IsCanceled = !register.IsCanceled // swap status
+
+			semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+			if err != nil {
+				return nil, myerror.ErrSemesterGet(err)
+			}
+
+			class, err := u.Class.GetClass(ctx, req.ClassID)
+			if err != nil {
+				return nil, myerror.ErrClassGet(err)
+			}
+
+			course, err := u.Course.GetCourse(ctx, req.CourseID)
+			if err != nil {
+				return nil, myerror.ErrCourseGet(err)
+			}
+
+			return &presenter.RegisterResponseWrapper{
+				Register: presenter.RegisterResponseCustom{
+					AccountID: register.AccountID,
+					Semester:  semester,
+					Class:     class,
+					Course:    course,
+				},
+			}, nil
+		} else {
+			return &presenter.RegisterResponseWrapper{
+				Register: presenter.RegisterResponseCustom{},
+			}, nil
+		}
 	}
 
 	// can not register with same course code
@@ -61,7 +92,26 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 		return nil, myerror.ErrRegisterCreate(err)
 	}
 
+	semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+	if err != nil {
+		return nil, myerror.ErrSemesterGet(err)
+	}
+
+	class, err := u.Class.GetClass(ctx, req.ClassID)
+	if err != nil {
+		return nil, myerror.ErrClassGet(err)
+	}
+
+	course, err := u.Course.GetCourse(ctx, req.CourseID)
+	if err != nil {
+		return nil, myerror.ErrCourseGet(err)
+	}
+
 	return &presenter.RegisterResponseWrapper{
-		Register: *register,
+		Register: presenter.RegisterResponseCustom{
+			Semester: semester,
+			Class:    class,
+			Course:   course,
+		},
 	}, nil
 }

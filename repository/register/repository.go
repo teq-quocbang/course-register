@@ -3,12 +3,13 @@ package register
 import (
 	"context"
 
+	"github.com/teq-quocbang/course-register/codetype"
 	"github.com/teq-quocbang/course-register/model"
 )
 
 type Repository interface {
 	Create(context.Context, *model.Register) error
-	GetListBySemesterID(ctx context.Context, semesterID string) ([]model.Register, error)
+	GetListBySemesterID(ctx context.Context, semesterID string, order []string, paginator codetype.Paginator) ([]model.Register, int64, error)
 	// GetListByFirstCourseChar is get list all the course that student registered
 	// use the first character of course_id
 	// ex:
@@ -20,5 +21,5 @@ type Repository interface {
 	// swap the state of the is_canceled field
 	// false -> true and true -> false
 	BatchUpdateSwapIsCanCeledStatus(context.Context, *model.Register) error
-	GetListRegistered(ctx context.Context, accountID uint, semesterID string) ([]model.Register, error)
+	GetListRegistered(ctx context.Context, accountID uint, semesterID string, order []string, paginator codetype.Paginator) ([]model.Register, int64, error)
 }

@@ -15,13 +15,13 @@ import (
 // @Accept  json
 // @Produce json
 // @Security no
-// @Param req body payload.ListSemesterInformationRequest
+// @Param req body payload.ListRegisteredHistories
 // @Success 200 {object} presenter.ListRegisterResponseWrapper
-// @Router /register [get] .
-func (r *Route) GetList(c echo.Context) error {
+// @Router /register/histories [get] .
+func (r *Route) GetHistories(c echo.Context) error {
 	var (
 		ctx  = &teq.CustomEchoContext{Context: c}
-		req  = payload.ListSemesterInformationRequest{}
+		req  = payload.ListRegisteredHistories{}
 		resp *presenter.ListRegisterResponseWrapper
 	)
 
@@ -29,7 +29,7 @@ func (r *Route) GetList(c echo.Context) error {
 		return teq.Response.Error(ctx, teqerror.ErrInvalidParams(err))
 	}
 
-	resp, err := r.UseCase.Register.GetListBySemester(ctx, &req)
+	resp, err := r.UseCase.Register.GetListRegisteredHistories(ctx, &req)
 	if err != nil {
 		return teq.Response.Error(c, err.(teqerror.TeqError))
 	}

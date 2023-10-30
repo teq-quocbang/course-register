@@ -2,11 +2,18 @@ package presenter
 
 import "github.com/teq-quocbang/course-register/model"
 
+type RegisterResponseCustom struct {
+	AccountID uint           `json:"account_id"`
+	Semester  model.Semester `json:"semester"`
+	Class     model.Class    `json:"class"`
+	Course    model.Course   `json:"course"`
+}
+
 type RegisterResponseWrapper struct {
-	Register model.Register `json:"register"`
+	Register RegisterResponseCustom `json:"register"`
 }
 
 type ListRegisterResponseWrapper struct {
-	Register []model.Register `json:"register"`
-	Meta     interface{}      `json:"meta"`
+	Register []RegisterResponseCustom `json:"register"`
+	Meta     interface{}              `json:"meta"`
 }

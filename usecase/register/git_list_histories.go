@@ -6,14 +6,13 @@ import (
 
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/presenter"
+	"github.com/teq-quocbang/course-register/util/contexts"
 	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
-func (u *UseCase) GetListBySemester(ctx context.Context, req *payload.ListSemesterInformationRequest) (*presenter.ListRegisterResponseWrapper, error) {
+func (u *UseCase) GetListRegisteredHistories(ctx context.Context, req *payload.ListRegisteredHistories) (*presenter.ListRegisterResponseWrapper, error) {
+	userPrinciple := contexts.GetUserPrincipleByContext(ctx)
 	req.Format()
-	if err := req.Validate(); err != nil {
-		return nil, myerror.ErrRegisterInvalidParam(err.Error())
-	}
 
 	var (
 		order = make([]string, 0)
@@ -23,9 +22,9 @@ func (u *UseCase) GetListBySemester(ctx context.Context, req *payload.ListSemest
 		order = append(order, fmt.Sprintf("%s %s", req.OrderBy, req.SortBy))
 	}
 
-	registers, total, err := u.Register.GetListBySemesterID(ctx, req.SemesterID, order, req.Paginator)
+	registers, total, err := u.Register.GetListRegistered(ctx, userPrinciple.User.ID, req.SemesterID, order, req.Paginator)
 	if err != nil {
-		return nil, myerror.ErrSemesterGet(err)
+		return nil, myerror.ErrRegisterGet(err)
 	}
 
 	response := &presenter.ListRegisterResponseWrapper{
@@ -60,5 +59,5 @@ func (u *UseCase) GetListBySemester(ctx context.Context, req *payload.ListSemest
 		}
 	}
 
-	return response, nil
+	return response, err
 }

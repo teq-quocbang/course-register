@@ -1,6 +1,11 @@
 package payload
 
-import "github.com/go-playground/validator/v10"
+import (
+	"strings"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/teq-quocbang/course-register/codetype"
+)
 
 type CreateRegisterRequest struct {
 	SemesterID string `json:"semester_id" validate:"required"`
@@ -15,6 +20,23 @@ func (r *CreateRegisterRequest) Validate() error {
 
 type ListSemesterInformationRequest struct {
 	SemesterID string `json:"semester_id" validate:"required"`
+	codetype.Paginator
+	SortBy  codetype.SortType `json:"sort_by,omitempty" query:"sort_by"`
+	OrderBy string            `json:"order_by,omitempty" query:"order_by"`
+}
+
+func (s *ListSemesterInformationRequest) Format() {
+	s.Paginator.Format()
+	s.SortBy.Format()
+	s.OrderBy = strings.ToLower(strings.TrimSpace(s.OrderBy))
+
+	for i := range orderByExample {
+		if s.OrderBy == orderByExample[i] {
+			return
+		}
+	}
+
+	s.OrderBy = ""
 }
 
 func (s *ListSemesterInformationRequest) Validate() error {
@@ -23,7 +45,24 @@ func (s *ListSemesterInformationRequest) Validate() error {
 }
 
 type ListRegisteredHistories struct {
-	SemesterID string `json:"semester_id" validate:"required"`
+	SemesterID string `json:"semester_id"`
+	codetype.Paginator
+	SortBy  codetype.SortType `json:"sort_by,omitempty" query:"sort_by"`
+	OrderBy string            `json:"order_by,omitempty" query:"order_by"`
+}
+
+func (s *ListRegisteredHistories) Format() {
+	s.Paginator.Format()
+	s.SortBy.Format()
+	s.OrderBy = strings.ToLower(strings.TrimSpace(s.OrderBy))
+
+	for i := range orderByExample {
+		if s.OrderBy == orderByExample[i] {
+			return
+		}
+	}
+
+	s.OrderBy = ""
 }
 
 func (r *ListRegisteredHistories) Validate() error {

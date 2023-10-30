@@ -26,10 +26,9 @@ func (u *UseCase) UnRegister(ctx context.Context, req *payload.UnRegisterRequest
 	if err != nil {
 		return nil, myerror.ErrRegisterGet(err)
 	}
-
 	if register.IsCanceled {
 		return &presenter.RegisterResponseWrapper{
-			Register: *register,
+			Register: presenter.RegisterResponseCustom{},
 		}, nil
 	}
 
@@ -38,18 +37,17 @@ func (u *UseCase) UnRegister(ctx context.Context, req *payload.UnRegisterRequest
 		SemesterID: req.SemesterID,
 		ClassID:    req.ClassID,
 		CourseID:   req.CourseID,
-		IsCanceled: !register.IsCanceled,
+		IsCanceled: register.IsCanceled,
 	}
 
 	if err := u.Register.BatchUpdateSwapIsCanCeledStatus(ctx, register); err != nil {
 		return nil, myerror.ErrRegisterUpdate(err)
 	}
-
 	if err != nil {
 		return nil, myerror.ErrRegisterGet(err)
 	}
 
 	return &presenter.RegisterResponseWrapper{
-		Register: *register,
+		Register: presenter.RegisterResponseCustom{},
 	}, nil
 }
