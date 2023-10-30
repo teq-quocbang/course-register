@@ -1,5 +1,7 @@
 CREATE TABLE IF NOT EXISTS `class` (
-  `id` BIGINT(20) AUTO_INCREMENT,
+  `id` VARCHAR(50),
+  `start_time` TIMESTAMP,
+  `end_time` TIMESTAMP,
   `course_id` varchar(50),
   `semester_id` varchar(50),
   `credits` INT,
