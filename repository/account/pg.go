@@ -48,3 +48,9 @@ func (p *pgRepository) GetAccountByConstraint(ctx context.Context, req *model.Ac
 
 	return account, nil
 }
+
+func (p *pgRepository) GetList(ctx context.Context) ([]model.Account, error) {
+	var accounts []model.Account
+	err := p.getDB(ctx).Find(&accounts).Error
+	return accounts, err
+}

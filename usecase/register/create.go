@@ -3,6 +3,7 @@ package register
 import (
 	"context"
 	"errors"
+	"reflect"
 
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
@@ -32,7 +33,7 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 	}
 
 	// if existed
-	if register != nil {
+	if !reflect.DeepEqual(register, &model.Register{}) {
 		// do swap isCanceled if register already exited and isCanceled == true
 		if register.IsCanceled {
 			err := u.Register.BatchUpdateSwapIsCanCeledStatus(ctx, register)
@@ -65,15 +66,35 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 				},
 			}, nil
 		} else {
+			semester, err := u.Semester.GetSemester(ctx, register.SemesterID)
+			if err != nil {
+				return nil, myerror.ErrSemesterGet(err)
+			}
+
+			class, err := u.Class.GetClass(ctx, register.ClassID)
+			if err != nil {
+				return nil, myerror.ErrClassGet(err)
+			}
+
+			course, err := u.Course.GetCourse(ctx, register.CourseID)
+			if err != nil {
+				return nil, myerror.ErrCourseGet(err)
+			}
+
 			return &presenter.RegisterResponseWrapper{
-				Register: presenter.RegisterResponseCustom{},
+				Register: presenter.RegisterResponseCustom{
+					AccountID: register.AccountID,
+					Semester:  semester,
+					Class:     class,
+					Course:    course,
+				},
 			}, nil
 		}
 	}
 
 	// can not register with same course code
 	firstCourseChar := string(req.CourseID[0])
-	registers, err := u.Register.GetListByFirstCourseChar(ctx, firstCourseChar, userPrinciple.User.ID)
+	registers, err := u.Register.GetListByFirstCourseChar(ctx, firstCourseChar, userPrinciple.User.ID, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrRegisterGet(err)
 	}

@@ -34,6 +34,8 @@ type Config struct {
 		HealthCheckEndPoint string `envconfig:"HEALTH_CHECK_ENDPOINT"`
 	}
 
+	CheckInsufficientCreditsEndPoint string `envconfig:"CHECK_INSUFFICIENT_CREDITS_ENDPOINT"`
+
 	AWSConfig struct {
 		Region    string `envconfig:"AWS_REGION"`
 		AccessKey string `envconfig:"AWS_ACCESS_KEY"`

@@ -15,5 +15,6 @@ func Init(group *echo.Group, useCase *usecase.UseCase) {
 	group.POST("", r.Create)
 	group.GET("", r.GetList)
 	group.GET("/histories", r.GetHistories)
+	group.GET("/tracing/insufficient-credits", r.Tracing)
 	group.PUT("/cancel", r.Update)
 }
