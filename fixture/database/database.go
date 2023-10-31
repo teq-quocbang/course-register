@@ -12,6 +12,7 @@ import (
 
 	"git.teqnological.asia/teq-go/teq-pkg/teqlogger"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // Register using Golang migrate.
+	"github.com/teq-quocbang/course-register/migration"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -20,6 +21,10 @@ import (
 // list tables in DB.
 var tables = []string{
 	"examples",
+	"account",
+	"semester",
+	"course",
+	"class",
 }
 
 type Database struct {
@@ -50,6 +55,9 @@ func InitDatabase() *Database {
 	if err != nil {
 		teqlogger.GetLogger().Fatal(err.Error())
 	}
+
+	// migration to test database
+	migration.Up(db, os.Getenv("DB_TEST_MIGRATION_PATH"), os.Getenv("DB_TEST_NAME"))
 
 	return &Database{DB: db.Session(&gorm.Session{})}
 }

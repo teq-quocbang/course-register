@@ -15,7 +15,6 @@ import (
 )
 
 func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*presenter.AccountResponseWrapper, error) {
-	// TODO: check permission
 	// validate check
 	if err := req.Validate(); err != nil {
 		return nil, myerror.ErrAccountInvalidParam(err.Error())

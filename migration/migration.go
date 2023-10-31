@@ -7,13 +7,12 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/teq-quocbang/course-register/config"
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
-func Up(db *gorm.DB) {
+func Up(db *gorm.DB, migratePath string, databaseName string) {
 	getDB, err := db.DB()
 	if err != nil {
 		teqsentry.Fatal(err)
@@ -26,7 +25,7 @@ func Up(db *gorm.DB) {
 		teqlogger.GetLogger().Fatal(err.Error())
 	}
 
-	m, err := migrate.NewWithDatabaseInstance("file://./migration", config.GetConfig().MySQL.DBName, driver)
+	m, err := migrate.NewWithDatabaseInstance(migratePath, databaseName, driver)
 	if err != nil {
 		teqsentry.Fatal(err)
 		teqlogger.GetLogger().Fatal(err.Error())
