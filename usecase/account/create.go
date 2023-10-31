@@ -31,7 +31,7 @@ func (u *UseCase) SignUp(ctx context.Context, req *payload.SignUpRequest) (*pres
 
 	// check whether constraint is existed
 	if account != nil {
-		return nil, myerror.ErrAccountConflictUniqueConstraint("Username was registered")
+		return nil, myerror.ErrAccountConflictUniqueConstraint("Username or Email was registered")
 	}
 
 	// create account
