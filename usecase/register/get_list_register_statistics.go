@@ -19,7 +19,7 @@ func (u *UseCase) TracingInsufficientCreditsStatistics(ctx context.Context) erro
 	}
 	currentYear := time.Now().Year()
 	// get semester by year
-	semesters, err := u.Semester.ListSemesterByYear(ctx, fmt.Sprint(currentYear))
+	semesters, err := u.Semester.GetListByYear(ctx, fmt.Sprint(currentYear))
 	if err != nil {
 		return myerror.ErrSemesterGet(err)
 	}
@@ -44,7 +44,7 @@ func (u *UseCase) TracingInsufficientCreditsStatistics(ctx context.Context) erro
 					}
 
 					// get credit of each class
-					class, err := u.Class.GetClass(ctx, r.ClassID)
+					class, err := u.Class.GetByID(ctx, r.ClassID)
 					if err != nil {
 						return myerror.ErrClassGet(err)
 					}

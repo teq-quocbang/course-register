@@ -42,17 +42,17 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 			}
 			register.IsCanceled = !register.IsCanceled // swap status
 
-			semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+			semester, err := u.Semester.GetByID(ctx, req.SemesterID)
 			if err != nil {
 				return nil, myerror.ErrSemesterGet(err)
 			}
 
-			class, err := u.Class.GetClass(ctx, req.ClassID)
+			class, err := u.Class.GetByID(ctx, req.ClassID)
 			if err != nil {
 				return nil, myerror.ErrClassGet(err)
 			}
 
-			course, err := u.Course.GetCourse(ctx, req.CourseID)
+			course, err := u.Course.GetByID(ctx, req.CourseID)
 			if err != nil {
 				return nil, myerror.ErrCourseGet(err)
 			}
@@ -66,17 +66,17 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 				},
 			}, nil
 		} else {
-			semester, err := u.Semester.GetSemester(ctx, register.SemesterID)
+			semester, err := u.Semester.GetByID(ctx, register.SemesterID)
 			if err != nil {
 				return nil, myerror.ErrSemesterGet(err)
 			}
 
-			class, err := u.Class.GetClass(ctx, register.ClassID)
+			class, err := u.Class.GetByID(ctx, register.ClassID)
 			if err != nil {
 				return nil, myerror.ErrClassGet(err)
 			}
 
-			course, err := u.Course.GetCourse(ctx, register.CourseID)
+			course, err := u.Course.GetByID(ctx, register.CourseID)
 			if err != nil {
 				return nil, myerror.ErrCourseGet(err)
 			}
@@ -113,17 +113,17 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 		return nil, myerror.ErrRegisterCreate(err)
 	}
 
-	semester, err := u.Semester.GetSemester(ctx, req.SemesterID)
+	semester, err := u.Semester.GetByID(ctx, req.SemesterID)
 	if err != nil {
 		return nil, myerror.ErrSemesterGet(err)
 	}
 
-	class, err := u.Class.GetClass(ctx, req.ClassID)
+	class, err := u.Class.GetByID(ctx, req.ClassID)
 	if err != nil {
 		return nil, myerror.ErrClassGet(err)
 	}
 
-	course, err := u.Course.GetCourse(ctx, req.CourseID)
+	course, err := u.Course.GetByID(ctx, req.CourseID)
 	if err != nil {
 		return nil, myerror.ErrCourseGet(err)
 	}
