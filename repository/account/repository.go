@@ -12,4 +12,5 @@ type Repository interface {
 	GetAccountByConstraint(context.Context, *model.Account) (*model.Account, error)
 	CreateVerifyAccount(context.Context, *model.AccountVerify) error
 	GetVerifyAccountByID(ctx context.Context, studentID uint) (*model.AccountVerify, error)
+	GetList(context.Context) ([]model.Account, error)
 }

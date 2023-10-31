@@ -142,9 +142,9 @@ func (p *pgRepository) BatchUpdateSwapIsCanCeledStatus(ctx context.Context, req 
 // with S in param so the result is:
 //
 //	[S0001]
-func (p *pgRepository) GetListByFirstCourseChar(ctx context.Context, firstChar string, accountID uint) ([]model.Register, error) {
+func (p *pgRepository) GetListByFirstCourseChar(ctx context.Context, firstChar string, accountID uint, semesterID string) ([]model.Register, error) {
 	var registers []model.Register
-	err := p.getDB(ctx).Where(`account_id = ? and substring(course_id, 1, 1) = ?`, accountID, firstChar).Find(&registers).Error
+	err := p.getDB(ctx).Where(`account_id = ? and substring(course_id, 1, 1) = ? and semester_id = ?`, accountID, firstChar, semesterID).Find(&registers).Error
 	return registers, err
 }
 
@@ -183,7 +183,11 @@ func (p *pgRepository) GetListRegistered(
 		offset = paginator.Limit * (paginator.Page - 1)
 	}
 
-	if err := db.Model(&model.Register{}).Offset(offset).Limit(paginator.Limit).Find(&registers).Error; err != nil {
+	if offset != 0 {
+		db = db.Offset(offset).Limit(paginator.Limit)
+	}
+
+	if err := db.Model(&model.Register{}).Find(&registers).Error; err != nil {
 		return nil, 0, err
 	}
 

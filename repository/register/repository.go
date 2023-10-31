@@ -16,7 +16,7 @@ type Repository interface {
 	//		student registered S0001, T0001, M0001
 	// with S in param so the result is:
 	// 		[S0001]
-	GetListByFirstCourseChar(ctx context.Context, firstChar string, accountID uint) ([]model.Register, error)
+	GetListByFirstCourseChar(ctx context.Context, firstChar string, accountID uint, semesterID string) ([]model.Register, error)
 	Get(context.Context, *model.Register) (*model.Register, error)
 	// swap the state of the is_canceled field
 	// false -> true and true -> false

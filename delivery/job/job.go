@@ -16,6 +16,7 @@ func (js Jobs) Run() {
 
 func New() Jobs {
 	return Jobs{
+		NewInsufficientCreditsCheck(config.GetConfig().CheckInsufficientCreditsEndPoint),
 		NewHealthChecks(config.GetConfig().HealthCheck.HealthCheckEndPoint),
 	}
 }

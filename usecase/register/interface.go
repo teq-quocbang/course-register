@@ -12,4 +12,5 @@ type IUseCase interface {
 	GetListBySemester(context.Context, *payload.ListSemesterInformationRequest) (*presenter.ListRegisterResponseWrapper, error)
 	UnRegister(context.Context, *payload.UnRegisterRequest) (*presenter.RegisterResponseWrapper, error)
 	GetListRegisteredHistories(context.Context, *payload.ListRegisteredHistories) (*presenter.ListRegisterResponseWrapper, error)
+	TracingInsufficientCreditsStatistics(context.Context) error
 }
