@@ -36,17 +36,17 @@ func (u *UseCase) GetListRegisteredHistories(ctx context.Context, req *payload.L
 		},
 	}
 	for i, r := range registers {
-		semester, err := u.Semester.GetSemester(ctx, r.SemesterID)
+		semester, err := u.Semester.GetByID(ctx, r.SemesterID)
 		if err != nil {
 			return nil, myerror.ErrSemesterGet(err)
 		}
 
-		class, err := u.Class.GetClass(ctx, r.ClassID)
+		class, err := u.Class.GetByID(ctx, r.ClassID)
 		if err != nil {
 			return nil, myerror.ErrClassGet(err)
 		}
 
-		course, err := u.Course.GetCourse(ctx, r.CourseID)
+		course, err := u.Course.GetByID(ctx, r.CourseID)
 		if err != nil {
 			return nil, myerror.ErrCourseGet(err)
 		}
