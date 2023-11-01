@@ -22,6 +22,7 @@ func (c *ListCourseBySemesterRequest) Validate() error {
 }
 
 type UpdateCourseRequest struct {
+	ID         string `json:"id" validate:"required"`
 	SemesterID string `json:"semester_id" validate:"required"`
 }
 

@@ -29,6 +29,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateCourseRequest) 
 	// update
 	userPrinciple := contexts.GetUserPrincipleByContext(ctx)
 	courseModel := &model.Course{
+		ID:         req.ID,
 		SemesterID: req.SemesterID,
 		UpdatedBy:  &userPrinciple.User.ID,
 	}

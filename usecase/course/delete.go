@@ -8,7 +8,7 @@ import (
 
 func (u *UseCase) Delete(ctx context.Context, id string) error {
 	if id == "" {
-		return myerror.ErrClassInvalidParam("id")
+		return myerror.ErrCourseInvalidParam("id")
 	}
 
 	_, err := u.Course.GetByID(ctx, id)
