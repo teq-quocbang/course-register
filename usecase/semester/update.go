@@ -44,7 +44,10 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateSemesterRequest
 		RegisterExpiresAt: *registerExpiresAt,
 		UpdatedBy:         &userPrinciple.User.ID,
 	}
-	u.Semester.Update(ctx, semesterModel)
+	err = u.Semester.Update(ctx, semesterModel)
+	if err != nil {
+		return nil, myerror.ErrSemesterUpdate(err)
+	}
 
 	return &presenter.SemesterResponseWrapper{
 		Semester: *semesterModel,
