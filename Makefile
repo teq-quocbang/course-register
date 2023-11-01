@@ -19,7 +19,8 @@ run:
 	@air -c .air.toml
 
 gen-mock:
-	@mockery --inpackage --name=Repository --dir=./repository/example
+	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/example
+	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/account
 
 unit-test:
 	@mkdir coverage || true

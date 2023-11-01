@@ -27,6 +27,7 @@ type Config struct {
 		DBMaxIdleConns int    `envconfig:"DB_MAX_IDLE_CONNS"`
 		DBMaxOpenConns int    `envconfig:"DB_MAX_OPEN_CONNS"`
 		CountRetryTx   int    `envconfig:"DB_TX_RETRY_COUNT"`
+		MigrationPath  string `envconfig:"DB_MIGRATION_PATH"`
 	}
 
 	HealthCheck struct {

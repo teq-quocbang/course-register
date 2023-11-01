@@ -86,7 +86,7 @@ func executeServer(useCase *usecase.UseCase, client func(ctx context.Context) *g
 	cfg := config.GetConfig()
 
 	// migration
-	migration.Up(client(context.Background()))
+	migration.Up(client(context.Background()), cfg.MySQL.MigrationPath, cfg.MySQL.DBName)
 
 	// cronjob
 	if len(cfg.HealthCheck.HealthCheckEndPoint) > 0 {
