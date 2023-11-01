@@ -37,7 +37,7 @@ func setUpTestSignUp(input *payload.SignUpRequest) (*httptest.ResponseRecorder, 
 func setUpTestLogin(input *payload.LoginRequest) (*httptest.ResponseRecorder, echo.Context) {
 	e := echo.New()
 	b, _ := json.Marshal(input)
-	req := httptest.NewRequest(http.MethodPost, "/api/user/loginp", bytes.NewReader(b))
+	req := httptest.NewRequest(http.MethodPost, "/api/user/login", bytes.NewReader(b))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 
