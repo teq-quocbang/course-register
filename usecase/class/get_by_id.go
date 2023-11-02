@@ -8,6 +8,10 @@ import (
 )
 
 func (u *UseCase) GetByID(ctx context.Context, id string) (*presenter.ClassResponseWrapper, error) {
+	if id == "" {
+		return nil, myerror.ErrClassInvalidParam("id")
+	}
+
 	class, err := u.Class.GetByID(ctx, id)
 	if err != nil {
 		return nil, myerror.ErrClassGet(err)
