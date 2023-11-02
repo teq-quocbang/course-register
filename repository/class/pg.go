@@ -35,7 +35,7 @@ func (p *pgRepository) GetByID(ctx context.Context, classID string) (model.Class
 
 func (p *pgRepository) Update(ctx context.Context, req *model.Class) error {
 	conditions := req.BuildUpdateFields()
-	return p.getDB(ctx).Model(&model.Semester{}).Where(`id = ?`, req.ID).Updates(conditions).Error
+	return p.getDB(ctx).Model(&model.Class{}).Where(`id = ?`, req.ID).Updates(conditions).Error
 }
 
 func (p *pgRepository) Delete(ctx context.Context, id string) error {

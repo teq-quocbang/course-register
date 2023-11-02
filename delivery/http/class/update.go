@@ -26,13 +26,13 @@ func (r *Route) Update(c echo.Context) error {
 		resp  *presenter.ClassResponseWrapper
 	)
 
-	req := payload.UpdateClassRequest{
-		ID: idStr,
-	}
+	req := payload.UpdateClassRequest{}
 
 	if err := c.Bind(&req); err != nil {
 		return teq.Response.Error(ctx, teqerror.ErrInvalidParams(err))
 	}
+
+	req.ID = idStr
 
 	resp, err := r.UseCase.Class.Update(ctx, &req)
 	if err != nil {
