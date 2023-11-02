@@ -25,6 +25,7 @@ var tables = []string{
 	"semester",
 	"course",
 	"class",
+	"register",
 }
 
 type Database struct {

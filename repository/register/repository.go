@@ -9,7 +9,7 @@ import (
 
 type Repository interface {
 	Create(context.Context, *model.Register) error
-	GetListBySemesterID(ctx context.Context, semesterID string, order []string, paginator codetype.Paginator) ([]model.Register, int64, error)
+	GetListBySemesterID(ctx context.Context, accountID uint, semesterID string, order []string, paginator codetype.Paginator) ([]model.Register, int64, error)
 	// GetListByFirstCourseChar is get list all the course that student registered
 	// use the first character of course_id
 	// ex:

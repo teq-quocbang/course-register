@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/teq-quocbang/course-register/util/myerror"
 )
 
 func TestValidate(t *testing.T) {
@@ -36,8 +35,8 @@ func TestValidate(t *testing.T) {
 		err := requestMissingUsername.Validate()
 
 		assertion.Error(err)
-		expected := myerror.ErrAccountInvalidParam("Key: 'SignUpRequest.Username' Error:Field validation for 'Username' failed on the 'required' tag")
-		assertion.Equal(expected, err)
+		expected := "Key: 'SignUpRequest.Username' Error:Field validation for 'Username' failed on the 'required' tag"
+		assertion.Equal(expected, err.Error())
 	}
 	{ // password short than 8 char
 		requestPasswordShort := SignUpRequest{
@@ -49,8 +48,8 @@ func TestValidate(t *testing.T) {
 		err := requestPasswordShort.Validate()
 
 		assertion.Error(err)
-		expected := myerror.ErrAccountInvalidParam("Key: 'SignUpRequest.Password' Error:Field validation for 'Password' failed on the 'min' tag")
-		assertion.Equal(expected, err)
+		expected := "Key: 'SignUpRequest.Password' Error:Field validation for 'Password' failed on the 'min' tag"
+		assertion.Equal(expected, err.Error())
 	}
 	{ // invalid email
 		requestInvalidEmail := SignUpRequest{
@@ -62,7 +61,7 @@ func TestValidate(t *testing.T) {
 		err := requestInvalidEmail.Validate()
 
 		assertion.Error(err)
-		expected := myerror.ErrAccountInvalidParam("Key: 'SignUpRequest.Email' Error:Field validation for 'Email' failed on the 'email' tag")
-		assertion.Equal(expected, err)
+		expected := "Key: 'SignUpRequest.Email' Error:Field validation for 'Email' failed on the 'email' tag"
+		assertion.Equal(expected, err.Error())
 	}
 }

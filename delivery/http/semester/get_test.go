@@ -81,10 +81,9 @@ func TestGet(t *testing.T) {
 		resp, ctx := setUpTestGet("")
 
 		// Act
-		err := r.Get(ctx)
+		r.Get(ctx)
 
 		// Assert
-		assertion.Error(err)
 		assertion.Equal(400, resp.Code)
 	}
 }

@@ -15,7 +15,7 @@ import (
 
 func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest) (*presenter.RegisterResponseWrapper, error) {
 	if err := req.Validate(); err != nil {
-		return nil, myerror.ErrSemesterInvalidParam(err.Error())
+		return nil, myerror.ErrRegisterInvalidParam(err.Error())
 	}
 
 	// get user principle from context
