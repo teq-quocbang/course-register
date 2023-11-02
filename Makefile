@@ -23,6 +23,7 @@ gen-mock:
 	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/account
 	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/semester
 	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/course
+	@mockery --inpackage --with-expecter --name=Repository --dir=./repository/class
 
 unit-test:
 	@mkdir coverage || true

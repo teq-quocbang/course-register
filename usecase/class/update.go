@@ -56,7 +56,7 @@ func (u *UseCase) Update(ctx context.Context, req *payload.UpdateClassRequest) (
 		EndTime:    *end,
 		Credits:    uint(req.Credits),
 		MaxSlot:    uint(req.MaxSlot),
-		CreatedBy:  &userPrinciple.User.ID,
+		UpdatedBy:  &userPrinciple.User.ID,
 	}
 
 	err = u.Class.Update(ctx, classModel)
