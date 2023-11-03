@@ -45,6 +45,7 @@ func (p *pgRepository) Create(ctx context.Context, r *model.Register) error {
 
 func (p *pgRepository) GetListBySemesterID(
 	ctx context.Context,
+	accountID uint,
 	semesterID string,
 	order []string,
 	paginator codetype.Paginator,
@@ -70,7 +71,7 @@ func (p *pgRepository) GetListBySemesterID(
 		offset = paginator.Limit * (paginator.Page - 1)
 	}
 
-	if err := db.Model(&model.Register{}).Where(`semester_id = ?`, semesterID).Offset(offset).Limit(paginator.Limit).Find(&register).Error; err != nil {
+	if err := db.Model(&model.Register{}).Where(`semester_id = ? and account_id = ? and is_canceled = false`, semesterID, accountID).Offset(offset).Limit(paginator.Limit).Find(&register).Error; err != nil {
 		return nil, 0, err
 	}
 	return register, total, nil
@@ -167,9 +168,9 @@ func (p *pgRepository) GetListRegistered(
 	}
 
 	if semesterID == "" {
-		db = db.Where(`account_id = ? and is_canceled = false`, accountID)
+		db = db.Where(`account_id = ?`, accountID)
 	} else {
-		db = db.Where(`account_id = ? and semester_id = ? and is_canceled = false`, accountID, semesterID)
+		db = db.Where(`account_id = ? and semester_id = ?`, accountID, semesterID)
 	}
 
 	if paginator.Limit != -1 {

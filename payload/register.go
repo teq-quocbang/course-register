@@ -18,14 +18,14 @@ func (r *CreateRegisterRequest) Validate() error {
 	return validate.Struct(r)
 }
 
-type ListSemesterInformationRequest struct {
+type ListRegisterInformationRequest struct {
 	SemesterID string `json:"semester_id" validate:"required"`
 	codetype.Paginator
 	SortBy  codetype.SortType `json:"sort_by,omitempty" query:"sort_by"`
 	OrderBy string            `json:"order_by,omitempty" query:"order_by"`
 }
 
-func (s *ListSemesterInformationRequest) Format() {
+func (s *ListRegisterInformationRequest) Format() {
 	s.Paginator.Format()
 	s.SortBy.Format()
 	s.OrderBy = strings.ToLower(strings.TrimSpace(s.OrderBy))
@@ -39,7 +39,7 @@ func (s *ListSemesterInformationRequest) Format() {
 	s.OrderBy = ""
 }
 
-func (s *ListSemesterInformationRequest) Validate() error {
+func (s *ListRegisterInformationRequest) Validate() error {
 	validate := validator.New()
 	return validate.Struct(s)
 }

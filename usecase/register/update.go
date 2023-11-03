@@ -31,6 +31,9 @@ func (u *UseCase) UnRegister(ctx context.Context, req *payload.UnRegisterRequest
 			Register: presenter.RegisterResponseCustom{},
 		}, nil
 	}
+	if register.CreatedBy != userPrinciple.User.ID {
+		return nil, myerror.ErrRegisterInvalidParam("not permission")
+	}
 
 	register = &model.Register{
 		AccountID:  userPrinciple.User.ID,

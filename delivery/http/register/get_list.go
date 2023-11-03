@@ -21,7 +21,7 @@ import (
 func (r *Route) GetList(c echo.Context) error {
 	var (
 		ctx  = &teq.CustomEchoContext{Context: c}
-		req  = payload.ListSemesterInformationRequest{}
+		req  = payload.ListRegisterInformationRequest{}
 		resp *presenter.ListRegisterResponseWrapper
 	)
 
