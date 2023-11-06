@@ -19,7 +19,6 @@ services:
           "--collation-server=utf8mb4_unicode_ci",
           "--default-authentication-plugin=mysql_native_password"
       ]
-
   teq_test:
     container_name: mysql_test
     platform: linux/x86_64
@@ -40,6 +39,29 @@ services:
         "--collation-server=utf8mb4_unicode_ci",
         "--default-authentication-plugin=mysql_native_password"
       ]
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports: 
+      - ${REDIS_PORT}:6379          
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./cachedata/:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis_test:
+    container_name: redis_test
+    image: redis:latest
+    restart: always
+    ports: 
+      - ${REDIS_TEST_PORT}:6379          
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./cachedata/:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+
 volumes:
   example:
   example_test:

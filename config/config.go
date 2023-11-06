@@ -55,6 +55,14 @@ type Config struct {
 	TokenSecretKey       string `envconfig:"TOKEN_SECRET_KEY"`
 	AccessTokenDuration  int64  `envconfig:"ACCESS_TOKEN_DURATION"`
 	RefreshTokenDuration int64  `envconfig:"REFRESH_TOKEN_DURATION"`
+
+	Cache struct {
+		Redis struct {
+			Host     string `envconfig:"REDIS_HOST"`
+			Port     int    `envconfig:"REDIS_PORT"`
+			Password string `envconfig:"REDIS_PASSWORD"`
+		}
+	}
 }
 
 func init() {

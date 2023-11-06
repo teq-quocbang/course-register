@@ -76,3 +76,30 @@ func ErrCanNotRegisterSameCourse(param string) teqerror.TeqError {
 		IsSentry:  false,
 	}
 }
+
+func ErrFailedToGetCache(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "51001",
+		Message:   "failed to get cache",
+	}
+}
+
+func ErrFailedToSaveCache(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "51002",
+		Message:   "failed to save cache",
+	}
+}
+
+func ErrFailedToRemoveCache(err error) teqerror.TeqError {
+	return teqerror.TeqError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: "51003",
+		Message:   "failed to remove cache",
+	}
+}

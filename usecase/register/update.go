@@ -2,6 +2,7 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
@@ -48,6 +49,11 @@ func (u *UseCase) UnRegister(ctx context.Context, req *payload.UnRegisterRequest
 	}
 	if err != nil {
 		return nil, myerror.ErrRegisterGet(err)
+	}
+
+	// clear cache with prefix accountID*
+	if err := u.Cache.Register().ClearRegisterHistories(ctx, fmt.Sprintf("%d", userPrinciple.User.ID)); err != nil {
+		return nil, myerror.ErrFailedToRemoveCache(err)
 	}
 
 	return &presenter.RegisterResponseWrapper{

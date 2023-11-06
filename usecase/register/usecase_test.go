@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/teq-quocbang/course-register/cache"
 	"github.com/teq-quocbang/course-register/config"
 	"github.com/teq-quocbang/course-register/repository/class"
 	"github.com/teq-quocbang/course-register/repository/course"
@@ -16,7 +17,12 @@ type TestSuite struct {
 	suite.Suite
 
 	ctx     context.Context
-	useCase func(*register.MockRepository, *semester.MockRepository, *class.MockRepository, *course.MockRepository) UseCase
+	useCase func(
+		*register.MockRepository,
+		*semester.MockRepository,
+		*class.MockRepository,
+		*course.MockRepository,
+		*cache.MockICache) UseCase
 }
 
 func (suite *TestSuite) SetupTest() {
@@ -34,12 +40,14 @@ func NewTestUseCase(
 	register *register.MockRepository,
 	semester *semester.MockRepository,
 	class *class.MockRepository,
-	course *course.MockRepository) UseCase {
+	course *course.MockRepository,
+	cache *cache.MockICache) UseCase {
 	return UseCase{
 		Register: register,
 		Class:    class,
 		Course:   course,
 		Semester: semester,
+		Cache:    cache,
 		Config:   config.GetConfig(),
 	}
 }

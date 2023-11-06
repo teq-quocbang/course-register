@@ -20,7 +20,7 @@ func TestSignUp(t *testing.T) {
 
 	repo := repository.New(db.GetClient)
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	// good case
@@ -69,7 +69,7 @@ func TestLogin(t *testing.T) {
 
 	repo := repository.New(db.GetClient)
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	// good case

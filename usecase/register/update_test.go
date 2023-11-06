@@ -2,10 +2,12 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"bou.ke/monkey"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
+	"github.com/teq-quocbang/course-register/cache"
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/repository/class"
@@ -38,6 +40,7 @@ func (s *TestSuite) TestUnRegister() {
 	{
 		// Arrange
 		mockRegisterRepo := register.NewMockRepository(s.T())
+		mockCache := cache.NewMockICache(s.T())
 		mockRegisterRepo.EXPECT().Get(s.ctx, &model.Register{
 			AccountID:  1,
 			SemesterID: testSemesterID,
@@ -58,7 +61,19 @@ func (s *TestSuite) TestUnRegister() {
 			ClassID:    testClassID,
 			CourseID:   testCourseID,
 		}).ReturnArguments = mock.Arguments{nil}
-		u := s.useCase(mockRegisterRepo, semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()))
+		mockCache.EXPECT().Register().ReturnArguments = mock.Arguments{
+			func() cache.RegisterService {
+				register := cache.NewMockRegisterService(s.T())
+				register.EXPECT().ClearRegisterHistories(s.ctx, fmt.Sprintf("%d", 1)).ReturnArguments = mock.Arguments{nil}
+
+				return &cache.MockRegisterService{
+					Mock: mock.Mock{
+						ExpectedCalls: register.ExpectedCalls,
+					},
+				}
+			}(),
+		}
+		u := s.useCase(mockRegisterRepo, semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()), mockCache)
 		req := &payload.UnRegisterRequest{
 			SemesterID: testSemesterID,
 			CourseID:   testCourseID,
@@ -80,7 +95,7 @@ func (s *TestSuite) TestUnRegister() {
 			ClassID:  testClassID,
 			CourseID: testCourseID,
 		}
-		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()))
+		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()), cache.NewMockICache(s.T()))
 
 		// Act
 		_, err := u.UnRegister(s.ctx, req)

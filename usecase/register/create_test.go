@@ -2,10 +2,12 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"bou.ke/monkey"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
+	"github.com/teq-quocbang/course-register/cache"
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/repository/class"
@@ -42,6 +44,7 @@ func (s *TestSuite) TestCreate() {
 		mockCourseRepo := course.NewMockRepository(s.T())
 		mockClassRepo := class.NewMockRepository(s.T())
 		mockRegisterRepo := register.NewMockRepository(s.T())
+		mockCache := cache.NewMockICache(s.T())
 		mockRegisterRepo.EXPECT().Get(s.ctx, &model.Register{
 			AccountID:  uint(1),
 			SemesterID: testSemesterID,
@@ -74,8 +77,19 @@ func (s *TestSuite) TestCreate() {
 				ID: testCourseID,
 			}, nil,
 		}
+		mockCache.EXPECT().Register().ReturnArguments = mock.Arguments{
+			func() cache.RegisterService {
+				register := cache.NewMockRegisterService(s.T())
+				register.EXPECT().ClearRegisterHistories(s.ctx, fmt.Sprintf("%d", 1)).ReturnArguments = mock.Arguments{nil}
+				return &cache.MockRegisterService{
+					Mock: mock.Mock{
+						ExpectedCalls: register.ExpectedCalls,
+					},
+				}
+			}(),
+		}
 
-		u := s.useCase(mockRegisterRepo, mockSemesterRepo, mockClassRepo, mockCourseRepo)
+		u := s.useCase(mockRegisterRepo, mockSemesterRepo, mockClassRepo, mockCourseRepo, mockCache)
 
 		// Act
 		reply, err := u.Create(s.ctx, &payload.CreateRegisterRequest{
@@ -99,7 +113,7 @@ func (s *TestSuite) TestCreate() {
 			ClassID:  testClassID,
 			CourseID: testCourseID,
 		}
-		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()))
+		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()), cache.NewMockICache(s.T()))
 
 		// Act
 		_, err := u.Create(s.ctx, req)

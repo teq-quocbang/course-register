@@ -32,7 +32,7 @@ func TestCreate(t *testing.T) {
 
 	repo := repository.New(db.GetClient)
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 	testSemesterID := "TEST_S0001"
 	testMinCredits := 15

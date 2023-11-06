@@ -8,10 +8,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"git.teqnological.asia/teq-go/teq-pkg/teqlogger"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // Register using Golang migrate.
+	"github.com/teq-quocbang/course-register/cache"
+	"github.com/teq-quocbang/course-register/cache/connection"
 	"github.com/teq-quocbang/course-register/migration"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -63,6 +66,18 @@ func InitDatabase() *Database {
 	return &Database{DB: db.Session(&gorm.Session{})}
 }
 
+func InitCache() cache.ICache {
+	port, err := strconv.Atoi(os.Getenv("REDIS_TEST_PORT"))
+	if err != nil {
+		teqlogger.GetLogger().Fatal(err.Error())
+	}
+
+	return connection.NewRedisCache(connection.RedisConfig{
+		Address:  os.Getenv("REDIS_TEST_HOST"),
+		Port:     port,
+		Password: os.Getenv("REDIS_TEST_PASSWORD"),
+	})
+}
 func (d *Database) TruncateTables() {
 	d.DB.Exec("SET FOREIGN_KEY_CHECKS=0")
 	defer d.DB.Exec("SET FOREIGN_KEY_CHECKS=1")

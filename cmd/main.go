@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
+	"github.com/teq-quocbang/course-register/cache/connection"
 	"github.com/teq-quocbang/course-register/client/mysql"
 	"github.com/teq-quocbang/course-register/config"
 	serviceGRPC "github.com/teq-quocbang/course-register/delivery/grpc"
@@ -71,8 +72,13 @@ func main() {
 	}
 
 	client := mysql.GetClient
+	cache := connection.NewRedisCache(connection.RedisConfig{
+		Address:  cfg.Cache.Redis.Host,
+		Port:     cfg.Cache.Redis.Port,
+		Password: cfg.Cache.Redis.Password,
+	})
 	repo := repository.New(client)
-	useCase := usecase.New(repo)
+	useCase := usecase.New(repo, cache)
 
 	switch *taskPtr {
 	case "server":
