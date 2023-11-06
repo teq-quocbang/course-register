@@ -32,11 +32,11 @@ func TestGetList(t *testing.T) {
 
 	repo := repository.New(db.GetClient)
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	rSemester := semester.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	// good case

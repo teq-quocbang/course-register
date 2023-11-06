@@ -102,8 +102,9 @@ func TestCreate(t *testing.T) {
 	defer db.TruncateTables()
 
 	repo := repository.New(db.GetClient)
+	cache := database.InitCache()
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, cache),
 	}
 	testSemesterID := "S0001"
 	testCourseID := "M0001"
@@ -236,7 +237,7 @@ func createSemester(
 	registerExpiresAt string,
 	repo *repository.Repository) error {
 	rSemester := semester.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	// create semester
@@ -261,7 +262,7 @@ func createSemester(
 
 func createCourse(courseID string, semesterID string, repo *repository.Repository) error {
 	rCourse := course.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 	// create course
 	createCourseRequest := &payload.CreateCourseRequest{
@@ -281,7 +282,7 @@ func createCourse(courseID string, semesterID string, repo *repository.Repositor
 
 func createClass(classID string, courseID string, semesterID string, repo *repository.Repository) error {
 	rClass := class.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 	// create class
 	classStartTime := time.Now().Add(time.Minute * 2).Format(time.RFC3339)
@@ -308,7 +309,7 @@ func createClass(classID string, courseID string, semesterID string, repo *repos
 
 func createAccount(username string, email string, password string, repo *repository.Repository) error {
 	rAccount := account.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	// create account

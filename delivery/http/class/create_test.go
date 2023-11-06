@@ -35,7 +35,7 @@ func TestCreate(t *testing.T) {
 
 	repo := repository.New(db.GetClient)
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	testSemesterID := "S0001"
@@ -110,10 +110,10 @@ func TestCreate(t *testing.T) {
 func CreateForeignKeyDataHelper(semesterID string, courseID string, db *database.Database) error {
 	repo := repository.New(db.GetClient)
 	rSemester := semester.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 	rCourse := course.Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, nil),
 	}
 
 	testMinCredits := 15

@@ -19,7 +19,7 @@ func TestUpdate(t *testing.T) {
 	defer db.TruncateTables()
 
 	repo := repository.New(db.GetClient)
-	r := example.Route{UseCase: usecase.New(repo)}
+	r := example.Route{UseCase: usecase.New(repo, nil)}
 
 	t.Run("200", func(t *testing.T) {
 		t.Run("Update", func(t *testing.T) {

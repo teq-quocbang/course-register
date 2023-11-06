@@ -25,8 +25,9 @@ func TestGetListHistories(t *testing.T) {
 	defer db.TruncateTables()
 
 	repo := repository.New(db.GetClient)
+	cache := database.InitCache()
 	r := Route{
-		UseCase: usecase.New(repo),
+		UseCase: usecase.New(repo, cache),
 	}
 
 	testSemesterID := "S0001"
