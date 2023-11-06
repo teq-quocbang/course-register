@@ -2,7 +2,10 @@ package register
 
 import (
 	"context"
+	"errors"
 	"fmt"
+
+	"github.com/redis/go-redis/v9"
 
 	"github.com/teq-quocbang/course-register/payload"
 	"github.com/teq-quocbang/course-register/presenter"
@@ -20,6 +23,24 @@ func (u *UseCase) GetListRegisteredHistories(ctx context.Context, req *payload.L
 
 	if req.OrderBy != "" {
 		order = append(order, fmt.Sprintf("%s %s", req.OrderBy, req.SortBy))
+	}
+
+	// get in cache
+	registerHistoriesSaveCacheKey := fmt.Sprintf("%d|%s|%d|%d|%s|%s",
+		userPrinciple.User.ID,
+		req.SemesterID,
+		req.Paginator.Page,
+		req.Paginator.Limit,
+		req.OrderBy,
+		req.SortBy)
+	registerHistories, err := u.Cache.Register().GetRegisterHistories(ctx, registerHistoriesSaveCacheKey)
+	if err != nil && !errors.Is(err, redis.Nil) {
+		if err != nil {
+			return nil, myerror.ErrFailedToGetCache(err)
+		}
+	}
+	if registerHistories != nil {
+		return registerHistories, nil
 	}
 
 	registers, total, err := u.Register.GetListRegistered(ctx, userPrinciple.User.ID, req.SemesterID, order, req.Paginator)
@@ -57,6 +78,11 @@ func (u *UseCase) GetListRegisteredHistories(ctx context.Context, req *payload.L
 			Class:     class,
 			Course:    course,
 		}
+	}
+
+	// save to cache
+	if err := u.Cache.Register().CreateRegisterHistories(ctx, registerHistoriesSaveCacheKey, response); err != nil {
+		return nil, myerror.ErrFailedToSaveCache(err)
 	}
 
 	return response, err
