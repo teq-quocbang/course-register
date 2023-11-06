@@ -6,6 +6,7 @@ import (
 	"bou.ke/monkey"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
+	"github.com/teq-quocbang/course-register/cache"
 	"github.com/teq-quocbang/course-register/codetype"
 	"github.com/teq-quocbang/course-register/model"
 	"github.com/teq-quocbang/course-register/payload"
@@ -71,7 +72,7 @@ func (s *TestSuite) TestGetList() {
 				ID: testCourseID,
 			}, nil,
 		}
-		u := s.useCase(mockRegisterRepo, mockSemesterRepo, mockClassRepo, mockCourseRepo)
+		u := s.useCase(mockRegisterRepo, mockSemesterRepo, mockClassRepo, mockCourseRepo, cache.NewMockICache(s.T()))
 		req := &payload.ListRegisterInformationRequest{
 			SemesterID: testSemesterID,
 		}
@@ -88,7 +89,7 @@ func (s *TestSuite) TestGetList() {
 	{
 		// Arrange
 		req := &payload.ListRegisterInformationRequest{}
-		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()))
+		u := s.useCase(register.NewMockRepository(s.T()), semester.NewMockRepository(s.T()), class.NewMockRepository(s.T()), course.NewMockRepository(s.T()), cache.NewMockICache(s.T()))
 
 		// Act
 		_, err := u.GetListBySemester(s.ctx, req)
