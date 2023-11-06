@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/teq-quocbang/course-register/cache"
 	"github.com/teq-quocbang/course-register/repository"
 	"github.com/teq-quocbang/course-register/usecase/account"
 	"github.com/teq-quocbang/course-register/usecase/class"
@@ -26,7 +27,7 @@ type UseCase struct {
 	S3  myS3.IS3
 }
 
-func New(repo *repository.Repository) *UseCase {
+func New(repo *repository.Repository, cache cache.ICache) *UseCase {
 	var (
 		ses = mySES.NewSES()
 		s3  = myS3.NewS3()
@@ -37,7 +38,7 @@ func New(repo *repository.Repository) *UseCase {
 		Class:    class.New(repo, ses),
 		Course:   course.New(repo, ses),
 		Semester: semester.New(repo, ses),
-		Register: register.New(repo, ses),
+		Register: register.New(repo, ses, cache),
 		Example:  example.New(repo, ses),
 		GRPC:     grpc.New(repo),
 		SES:      ses,

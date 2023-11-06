@@ -3,6 +3,7 @@ package register
 import (
 	"context"
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/teq-quocbang/course-register/model"
@@ -126,6 +127,11 @@ func (u *UseCase) Create(ctx context.Context, req *payload.CreateRegisterRequest
 	course, err := u.Course.GetByID(ctx, req.CourseID)
 	if err != nil {
 		return nil, myerror.ErrCourseGet(err)
+	}
+
+	// clear cache with prefix accountID*
+	if err := u.Cache.Register().ClearRegisterHistories(ctx, fmt.Sprintf("%d", userPrinciple.User.ID)); err != nil {
+		return nil, myerror.ErrFailedToRemoveCache(err)
 	}
 
 	return &presenter.RegisterResponseWrapper{
